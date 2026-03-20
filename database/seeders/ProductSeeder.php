@@ -201,7 +201,7 @@ class ProductSeeder extends Seeder
                     'is_active'        => true,
                     'is_featured'      => $data['is_featured'],
                     'attributes'       => $data['attributes'] ?? null,
-                    'meta_title'       => $data['name'] . ' | Tu Tienda',
+                    'meta_title'       => $data['name'] . ' | EM Collective',
                     'meta_description' => $data['description'],
                 ]
             );

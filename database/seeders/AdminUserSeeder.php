@@ -15,10 +15,10 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@tutienda.pe'],
+            ['email' => 'admin@emcollective.pe'],
             [
                 'name'              => 'Administrador',
-                'email'             => 'admin@tutienda.pe',
+                'email'             => 'admin@emcollective.pe',
                 'password'          => Hash::make('Admin123!'),
                 'role'              => 'admin',
                 'is_active'         => true,
@@ -26,6 +26,6 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $this->command->info('✅ Admin creado: admin@tutienda.pe / Admin123!');
+        $this->command->info('✅ Admin creado: admin@emcollective.pe / Admin123!');
     }
 }

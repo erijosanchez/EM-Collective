@@ -20,7 +20,7 @@ class CategorySeeder extends Seeder
                 'slug'             => 'hombre',
                 'description'      => 'Ropa para hombre',
                 'image'            => null,
-                'meta_title'       => 'Ropa para Hombre | Tu Tienda',
+                'meta_title'       => 'Ropa para Hombre | EM Collective',
                 'meta_description' => 'Encuentra polos, camisas, pantalones y más para hombre. Envío a todo el Perú.',
                 'sort_order'       => 1,
                 'children' => [
@@ -41,7 +41,7 @@ class CategorySeeder extends Seeder
                 'slug'             => 'mujer',
                 'description'      => 'Ropa para mujer',
                 'image'            => null,
-                'meta_title'       => 'Ropa para Mujer | Tu Tienda',
+                'meta_title'       => 'Ropa para Mujer | EM Collective',
                 'meta_description' => 'Descubre vestidos, blusas, pantalones y más para mujer. Moda al mejor precio.',
                 'sort_order'       => 2,
                 'children' => [
@@ -62,7 +62,7 @@ class CategorySeeder extends Seeder
                 'slug'             => 'ninos',
                 'description'      => 'Ropa para niños y niñas',
                 'image'            => null,
-                'meta_title'       => 'Ropa para Niños | Tu Tienda',
+                'meta_title'       => 'Ropa para Niños | EM Collective',
                 'meta_description' => 'Ropa cómoda y colorida para niños y niñas de todas las edades. Envío a todo el Perú.',
                 'sort_order'       => 3,
                 'children' => [
@@ -80,7 +80,7 @@ class CategorySeeder extends Seeder
                 'slug'             => 'ofertas',
                 'description'      => 'Las mejores ofertas y descuentos',
                 'image'            => null,
-                'meta_title'       => 'Ofertas y Descuentos | Tu Tienda',
+                'meta_title'       => 'Ofertas y Descuentos | EM Collective',
                 'meta_description' => 'Aprovecha las mejores ofertas en ropa para toda la familia.',
                 'sort_order'       => 4,
                 'children'         => [],
@@ -102,7 +102,7 @@ class CategorySeeder extends Seeder
                     array_merge($childData, [
                         'parent_id'        => $parent->id,
                         'slug'             => Str::slug($parent->slug . '-' . $childData['name']),
-                        'meta_title'       => $childData['name'] . ' | Tu Tienda',
+                        'meta_title'       => $childData['name'] . ' | EM Collective',
                         'meta_description' => 'Encuentra ' . strtolower($childData['name']) . ' al mejor precio. Envío a todo el Perú.',
                         'is_active'        => true,
                     ])

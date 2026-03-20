@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class Seetting extends Model
+class Setting extends Model
 {
     protected $fillable = ['key', 'value', 'group'];
 

@@ -15,9 +15,9 @@ class SettingsSeeder extends Seeder
     {
         $settings = [
             // ── General ──────────────────────────────────────────────────
-            ['key' => 'store_name',         'value' => 'Tu Tienda',                         'group' => 'general'],
-            ['key' => 'store_tagline',       'value' => 'Moda para toda la familia',          'group' => 'general'],
-            ['key' => 'store_email',         'value' => 'contacto@tutienda.pe',               'group' => 'general'],
+            ['key' => 'store_name',         'value' => 'EM Collective',                      'group' => 'general'],
+            ['key' => 'store_tagline',       'value' => 'Moda editorial para toda la familia', 'group' => 'general'],
+            ['key' => 'store_email',         'value' => 'contacto@emcollective.pe',            'group' => 'general'],
             ['key' => 'store_phone',         'value' => '+51 987 654 321',                    'group' => 'general'],
             ['key' => 'store_whatsapp',      'value' => '51987654321',                        'group' => 'general'],
             ['key' => 'store_address',       'value' => 'Lima, Perú',                         'group' => 'general'],
@@ -27,9 +27,9 @@ class SettingsSeeder extends Seeder
             ['key' => 'currency_symbol',     'value' => 'S/',                                 'group' => 'general'],
 
             // ── SEO ───────────────────────────────────────────────────────
-            ['key' => 'seo_home_title',      'value' => 'Tu Tienda | Moda para toda la familia', 'group' => 'seo'],
-            ['key' => 'seo_home_description', 'value' => 'Encuentra ropa para hombre, mujer y niños al mejor precio. Envío a todo el Perú. Paga con Mercado Pago o contra entrega.', 'group' => 'seo'],
-            ['key' => 'seo_home_keywords',   'value' => 'ropa peru, tienda online, moda, ropa hombre, ropa mujer, ropa niños', 'group' => 'seo'],
+            ['key' => 'seo_home_title',      'value' => 'EM Collective | Moda editorial para toda la familia', 'group' => 'seo'],
+            ['key' => 'seo_home_description', 'value' => 'Descubre moda para hombre, mujer y niños al mejor precio. Envío a todo el Perú. Paga con Mercado Pago o contra entrega.', 'group' => 'seo'],
+            ['key' => 'seo_home_keywords',   'value' => 'ropa peru, tienda online, moda, em collective, ropa hombre, ropa mujer, ropa niños', 'group' => 'seo'],
             ['key' => 'google_analytics_id', 'value' => null,                                 'group' => 'seo'],
             ['key' => 'facebook_pixel_id',   'value' => null,                                 'group' => 'seo'],
 
@@ -54,9 +54,9 @@ class SettingsSeeder extends Seeder
             ['key' => 'social_youtube',     'value' => null, 'group' => 'social'],
 
             // ── Emails ───────────────────────────────────────────────────
-            ['key' => 'mail_from_name',     'value' => 'Tu Tienda',            'group' => 'email'],
-            ['key' => 'mail_from_address',  'value' => 'no-reply@tutienda.pe', 'group' => 'email'],
-            ['key' => 'mail_footer_text',   'value' => '© 2026 Tu Tienda. Todos los derechos reservados.', 'group' => 'email'],
+            ['key' => 'mail_from_name',     'value' => 'EM Collective',                'group' => 'email'],
+            ['key' => 'mail_from_address',  'value' => 'no-reply@emcollective.pe',   'group' => 'email'],
+            ['key' => 'mail_footer_text',   'value' => '© 2026 EM Collective. Todos los derechos reservados.', 'group' => 'email'],
 
             // ── Tienda ───────────────────────────────────────────────────
             ['key' => 'products_per_page',       'value' => '24',   'group' => 'store'],
