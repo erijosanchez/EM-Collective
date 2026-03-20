@@ -29,9 +29,12 @@ class Banner extends Model
         'ends_at'   => 'datetime',
     ];
 
+    // ─── Scopes ───────────────────────────────────────────────────────────
+
     public function scopeActive($query)
     {
-        return $query->where('is_active', true)
+        return $query
+            ->where('is_active', true)
             ->where(fn($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
             ->where(fn($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>=', now()));
     }
@@ -39,5 +42,25 @@ class Banner extends Model
     public function scopeForPosition($query, string $position)
     {
         return $query->where('position', $position)->orderBy('sort_order');
+    }
+
+    // ─── Helpers ──────────────────────────────────────────────────────────
+
+    public function getIsCurrentlyActiveAttribute(): bool
+    {
+        if (!$this->is_active) return false;
+        if ($this->starts_at && now()->lt($this->starts_at)) return false;
+        if ($this->ends_at && now()->gt($this->ends_at)) return false;
+        return true;
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return asset('storage/' . $this->image);
+    }
+
+    public function getImageMobileUrlAttribute(): ?string
+    {
+        return $this->image_mobile ? asset('storage/' . $this->image_mobile) : null;
     }
 }
