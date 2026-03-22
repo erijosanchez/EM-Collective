@@ -16,10 +16,16 @@
                         carbon:    '#1A1A18',
                         sbg:       '#0E0E0C',
                         sidebar:   '#161614',
-                        cream:     '#F5F0E8',
-                        terracota: '#C4714A',
-                        stone:     '#8A8880',
+                        cream:     '#F5F1EB',
+                        accent:    '#B85C38',
+                        sage:      '#4D7C5F',
+                        urgency:   '#D94035',
+                        stone:     '#9E9589',
                         panel:     '#1E1E1C',
+                        // legacy aliases
+                        terracota: '#B85C38',
+                        red:       '#D94035',
+                        blue:      '#B85C38',
                     },
                     fontFamily: {
                         serif: ['"Cormorant Garamond"', 'serif'],
@@ -30,23 +36,31 @@
         }
     </script>
     <style>
-        body { font-family: 'DM Sans', sans-serif; background: #0E0E0C; color: #F5F0E8; }
+        body { font-family: 'DM Sans', sans-serif; background: #0E0E0C; color: #F5F1EB; }
         h1,h2,h3 { font-family: 'Cormorant Garamond', serif; }
-        .nav-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.75rem; color: #8A8880; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.15s; border-radius: 0; }
-        .nav-link:hover, .nav-link.active { color: #F5F0E8; background: #1E1E1C; }
-        .nav-link.active { color: #C4714A; }
+        .nav-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.75rem; color: #9CA3AF; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.15s, background 0.15s; border-radius: 0; }
+        .nav-link:hover { color: #F5F1EB; background: #1E1E1C; }
+        .nav-link.active { color: #B85C38; background: #1E1E1C; }
         .btn-admin { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1.25rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; transition: all 0.15s; }
-        .btn-admin-primary { background: #C4714A; color: #fff; }
-        .btn-admin-primary:hover { background: #b3623b; }
-        .btn-admin-ghost { border: 1px solid #3a3a38; color: #8A8880; }
-        .btn-admin-ghost:hover { border-color: #F5F0E8; color: #F5F0E8; }
-        .form-input { background: #1E1E1C; border: 1px solid #3a3a38; color: #F5F0E8; padding: 0.5rem 0.75rem; font-size: 0.875rem; width: 100%; }
-        .form-input:focus { outline: none; border-color: #C4714A; }
-        .form-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8A8880; display: block; margin-bottom: 0.375rem; }
+        .btn-admin-primary { background: #B85C38; color: #fff; }
+        .btn-admin-primary:hover { background: #9e4a2a; }
+        .btn-admin-success { background: #4D7C5F; color: #fff; }
+        .btn-admin-success:hover { background: #3d6349; }
+        .btn-admin-danger { background: #D94035; color: #fff; }
+        .btn-admin-danger:hover { background: #bf3328; }
+        .btn-admin-ghost { border: 1px solid #3a3a38; color: #9E9589; }
+        .btn-admin-ghost:hover { border-color: #F5F1EB; color: #F5F1EB; }
+        .form-input { background: #1E1E1C; border: 1px solid #3a3a38; color: #F5F1EB; padding: 0.5rem 0.75rem; font-size: 0.875rem; width: 100%; }
+        .form-input:focus { outline: none; border-color: #B85C38; box-shadow: 0 0 0 2px rgba(184,92,56,0.2); }
+        .form-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #9CA3AF; display: block; margin-bottom: 0.375rem; }
         .card { background: #161614; border: 1px solid #2a2a28; }
         .table-row { border-bottom: 1px solid #1E1E1C; }
         .table-row:hover { background: #1E1E1C; }
         select.form-input option { background: #1E1E1C; }
+        /* Status badges */
+        .badge-pending  { background: rgba(232,75,58,0.15); color: #E84B3A; }
+        .badge-active   { background: rgba(77,124,95,0.15); color: #4D7C5F; }
+        .badge-blue     { background: rgba(37,99,235,0.15); color: #B85C38; }
     </style>
     @yield('head')
 </head>

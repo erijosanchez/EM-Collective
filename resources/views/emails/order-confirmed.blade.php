@@ -23,11 +23,11 @@
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
         <td width="25%" style="text-align:center;padding:0 4px">
-            <div style="width:32px;height:32px;background:#C4714A;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:32px;text-align:center">✓</div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#C4714A;font-weight:600">Recibido</div>
+            <div style="width:32px;height:32px;background:#B85C38;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:32px;text-align:center">✓</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#B85C38;font-weight:600">Recibido</div>
         </td>
         <td style="padding:0;vertical-align:middle;padding-bottom:24px">
-            <div style="height:2px;background:#C4714A"></div>
+            <div style="height:2px;background:#B85C38"></div>
         </td>
         <td width="25%" style="text-align:center;padding:0 4px">
             <div style="width:32px;height:32px;background:#1A1A18;border-radius:50%;margin:0 auto 8px;font-size:14px;line-height:32px;text-align:center;color:#F5F0E8">⚡</div>
@@ -85,8 +85,8 @@
         </tr>
         @if($order->discount_amount > 0)
         <tr>
-            <td colspan="2" style="text-align:right;padding:8px 14px;color:#C4714A;border-bottom:1px solid #F0EBE3">Descuento</td>
-            <td style="text-align:right;padding:8px 14px;color:#C4714A;border-bottom:1px solid #F0EBE3">-S/ {{ number_format($order->discount_amount, 2) }}</td>
+            <td colspan="2" style="text-align:right;padding:8px 14px;color:#B85C38;border-bottom:1px solid #F0EBE3">Descuento</td>
+            <td style="text-align:right;padding:8px 14px;color:#B85C38;border-bottom:1px solid #F0EBE3">-S/ {{ number_format($order->discount_amount, 2) }}</td>
         </tr>
         @endif
         <tr>
@@ -133,9 +133,9 @@
 <p style="text-align:center;font-size:12px;color:#8A8880;margin-top:20px">
     ¿Tienes alguna pregunta? Escríbenos por
     @if(\App\Models\Setting::get('store_whatsapp'))
-    <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#C4714A">WhatsApp</a> o a
+    <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#B85C38">WhatsApp</a> o a
     @endif
-    <a href="mailto:{{ \App\Models\Setting::get('store_email','contacto@emcollective.pe') }}" style="color:#C4714A">{{ \App\Models\Setting::get('store_email','contacto@emcollective.pe') }}</a>
+    <a href="mailto:{{ \App\Models\Setting::get('store_email','contacto@emcollective.pe') }}" style="color:#B85C38">{{ \App\Models\Setting::get('store_email','contacto@emcollective.pe') }}</a>
 </p>
 
 @endsection

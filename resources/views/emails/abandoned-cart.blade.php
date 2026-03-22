@@ -3,15 +3,15 @@
 
 @section('hero')
 <p class="hero-eyebrow">👀 Tu carrito sigue aquí</p>
-<h1 class="hero-title">Dejaste algo<br><em style="font-style:italic;color:#C4714A">muy especial</em></h1>
+<h1 class="hero-title">Dejaste algo<br><em style="font-style:italic;color:#E84B3A">muy especial</em></h1>
 <p class="hero-subtitle">Notamos que dejaste productos increíbles en tu carrito. ¡No dejes que otro se los lleve!</p>
 @endsection
 
 @section('body')
 
 {{-- Urgencia --}}
-<div style="background:linear-gradient(135deg,#1A1A18,#2d2d2a);border-left:3px solid #C4714A;padding:18px 24px;margin-bottom:28px;text-align:center">
-    <p style="color:#C4714A;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px">⏰ Stock limitado</p>
+<div style="background:linear-gradient(135deg,#1A1A18,#2d2d2a);border-left:3px solid #E84B3A;padding:18px 24px;margin-bottom:28px;text-align:center">
+    <p style="color:#E84B3A;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px">⏰ Stock limitado</p>
     <p style="color:#F5F0E8;font-size:14px;font-weight:300">Estos productos tienen alta demanda. No podemos garantizar disponibilidad por mucho tiempo.</p>
 </div>
 
@@ -43,7 +43,7 @@
         <td style="padding:14px 16px;vertical-align:middle;text-align:right;white-space:nowrap">
             @if($item['sale_price'])
             <p style="font-size:15px;font-weight:700;color:#1A1A18">S/ {{ number_format($item['sale_price'] * $item['quantity'], 2) }}</p>
-            <p style="font-size:11px;color:#C4714A;text-decoration:line-through">S/ {{ number_format($item['base_price'] * $item['quantity'], 2) }}</p>
+            <p style="font-size:11px;color:#E84B3A;text-decoration:line-through">S/ {{ number_format($item['base_price'] * $item['quantity'], 2) }}</p>
             @else
             <p style="font-size:15px;font-weight:700;color:#1A1A18">S/ {{ number_format($item['base_price'] * $item['quantity'], 2) }}</p>
             @endif
@@ -93,7 +93,7 @@
 <p style="text-align:center;font-size:12px;color:#8A8880;margin-top:24px">
     ¿Tienes dudas? Escríbenos por
     @if(\App\Models\Setting::get('store_whatsapp'))
-    <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#C4714A">WhatsApp</a>
+    <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#E84B3A">WhatsApp</a>
     @endif
     — respondemos en minutos.
 </p>

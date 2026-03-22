@@ -21,7 +21,7 @@ class CheckoutRequest extends FormRequest
             'dni'            => 'nullable|string|max:12',
             'department'     => 'required|string|max:60',
             'province'       => 'required|string|max:60',
-            'district'       => 'required|string|max:60',
+            'district'       => 'required|string|max:100',
             'address'        => 'required|string|max:200',
             'reference'      => 'nullable|string|max:200',
             'payment_method' => 'required|in:mercadopago,contra_entrega',

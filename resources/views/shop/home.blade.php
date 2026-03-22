@@ -41,7 +41,7 @@
     .hero-text-anim-delay2 { animation: heroTextIn 0.7s 0.3s ease forwards; opacity: 0; }
 
     /* ── Product card hover line ── */
-    .product-line { height: 2px; background: #C4714A; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+    .product-line { height: 2px; background: #2563EB; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
     .group:hover .product-line { transform: scaleX(1); }
 
     /* Hover card elevación */

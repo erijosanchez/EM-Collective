@@ -36,9 +36,15 @@
                 extend: {
                     colors: {
                         carbon:    '#1A1A18',
-                        cream:     '#F5F0E8',
-                        terracota: '#C4714A',
-                        stone:     '#8A8880',
+                        cream:     '#F5F1EB',
+                        accent:    '#B85C38',
+                        sage:      '#4D7C5F',
+                        urgency:   '#D94035',
+                        stone:     '#9E9589',
+                        // legacy aliases
+                        terracota: '#B85C38',
+                        red:       '#D94035',
+                        blue:      '#B85C38',
                     },
                     fontFamily: {
                         serif: ['"Cormorant Garamond"', 'serif'],
@@ -49,12 +55,20 @@
         }
     </script>
     <style>
-        body { font-family: 'DM Sans', sans-serif; background: #F5F0E8; color: #1A1A18; }
+        :root {
+            --clr-carbon:  #1A1A18;
+            --clr-cream:   #F5F1EB;
+            --clr-accent:  #B85C38;
+            --clr-sage:    #4D7C5F;
+            --clr-urgency: #D94035;
+            --clr-stone:   #9E9589;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--clr-cream); color: var(--clr-carbon); }
         h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
         .btn-primary {
             display: inline-block;
-            background: #1A1A18;
-            color: #F5F0E8;
+            background: var(--clr-carbon);
+            color: var(--clr-cream);
             padding: 0.75rem 2rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -62,22 +76,35 @@
             font-family: 'DM Sans', sans-serif;
             font-weight: 500;
             transition: background 0.2s, color 0.2s;
-            border: 1px solid #1A1A18;
+            border: 1px solid var(--clr-carbon);
         }
-        .btn-primary:hover { background: #C4714A; border-color: #C4714A; }
+        .btn-primary:hover { background: var(--clr-accent); border-color: var(--clr-accent); }
         .btn-outline {
             display: inline-block;
             background: transparent;
-            color: #1A1A18;
+            color: var(--clr-carbon);
             padding: 0.75rem 2rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             font-size: 0.75rem;
             font-weight: 500;
             transition: all 0.2s;
-            border: 1px solid #1A1A18;
+            border: 1px solid var(--clr-carbon);
         }
-        .btn-outline:hover { background: #1A1A18; color: #F5F0E8; }
+        .btn-outline:hover { background: var(--clr-carbon); color: var(--clr-cream); }
+        .btn-sage {
+            display: inline-block;
+            background: var(--clr-sage);
+            color: #fff;
+            padding: 0.75rem 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: 1px solid var(--clr-sage);
+        }
+        .btn-sage:hover { background: #3d6349; border-color: #3d6349; }
         /* Animación fade up */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -89,9 +116,13 @@
         .img-hover img { transition: transform 0.4s ease; }
         .img-hover:hover img { transform: scale(1.05); }
         /* Mega-menú */
-        .mega-dropdown { background: #1A1A18; color: #F5F0E8; border-top: 1px solid rgba(138,136,128,0.2); }
+        .mega-dropdown { background: var(--clr-carbon); color: var(--clr-cream); border-top: 1px solid rgba(156,163,175,0.15); }
         /* Cart badge */
-        .cart-badge { background: #C4714A; }
+        .cart-badge { background: var(--clr-accent); }
+        /* Badge de oferta / urgencia */
+        .badge-sale { background: var(--clr-urgency); color: #fff; }
+        /* Badge "nuevo" */
+        .badge-new { background: var(--clr-sage); color: #fff; }
     </style>
     @yield('head')
 </head>

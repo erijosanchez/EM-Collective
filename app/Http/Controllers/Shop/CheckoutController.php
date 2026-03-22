@@ -76,19 +76,23 @@ class CheckoutController extends Controller
             // Redirigir según método de pago
             if ($request->payment_method === 'mercadopago') {
                 $order->load('items');
-                $preference = $this->mercadoPagoService->createPreference($order);
-
-                $initPoint = config('mercadopago.sandbox')
-                    ? ($preference['sandbox_init_point'] ?? $preference['init_point'])
-                    : $preference['init_point'];
-
-                return redirect($initPoint);
+                try {
+                    $preference = $this->mercadoPagoService->createPreference($order);
+                    $initPoint  = config('mercadopago.sandbox')
+                        ? ($preference['sandbox_init_point'] ?? $preference['init_point'])
+                        : $preference['init_point'];
+                    return redirect($initPoint);
+                } catch (\Exception $mpError) {
+                    // Si MP falla, cancelar la orden para no dejarla huérfana
+                    $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+                    return back()->withInput()->with('error', 'No se pudo conectar con Mercado Pago. Intenta con pago contra entrega.');
+                }
             }
 
             // Contra entrega — ir directamente a éxito
             return redirect()->route('checkout.success', $order);
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Ocurrió un error al procesar tu pedido. Por favor intenta de nuevo.');
+            return back()->withInput()->with('error', 'Ocurrió un error al procesar tu pedido: ' . $e->getMessage());
         }
     }
 

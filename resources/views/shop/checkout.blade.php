@@ -86,39 +86,63 @@
                     </div>
                     @endif
 
+                    @php
+                    $limaDistricts = [
+                        'Ate','Barranco','Breña','Carabayllo','Chaclacayo','Chorrillos','Cieneguilla',
+                        'Comas','El Agustino','Independencia','Jesús María','La Molina','La Victoria',
+                        'Lima (Cercado)','Lince','Los Olivos','Lurigancho','Lurín','Magdalena del Mar',
+                        'Miraflores','Pachacámac','Pueblo Libre','Puente Piedra','Rímac','San Borja',
+                        'San Isidro','San Juan de Lurigancho','San Juan de Miraflores','San Luis',
+                        'San Martín de Porres','San Miguel','Santa Anita','Santiago de Surco',
+                        'Surquillo','Villa El Salvador','Villa María del Triunfo',
+                    ];
+                    @endphp
+
+                    <div class="p-3 mb-4 bg-stone/5 border border-stone/20 text-xs text-stone flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Por el momento solo realizamos envíos dentro de <strong class="text-carbon ml-1">Lima Metropolitana</strong>.
+                    </div>
+
                     <div class="grid sm:grid-cols-2 gap-4" @fill-address.window="
                         let a = $event.detail;
-                        $el.querySelector('[name=department]').value = a.department;
-                        $el.querySelector('[name=province]').value = a.province;
-                        $el.querySelector('[name=district]').value = a.district;
+                        let sel = $el.querySelector('[name=district]');
+                        for(let opt of sel.options){ if(opt.value === a.district){ opt.selected=true; break; } }
                         $el.querySelector('[name=address]').value = a.address;
                         $el.querySelector('[name=reference]').value = a.reference || '';
                     ">
+                        {{-- Departamento fijo --}}
                         <div>
-                            <label class="block text-xs uppercase tracking-widest mb-2">Departamento *</label>
-                            <input type="text" name="department" value="{{ old('department') }}"
-                                   class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon" required>
+                            <label class="block text-xs uppercase tracking-widest mb-2">Departamento</label>
+                            <input type="text" name="department" value="Lima" readonly
+                                   class="w-full border border-stone/20 px-4 py-3 text-sm bg-stone/5 text-stone cursor-not-allowed">
                         </div>
+                        {{-- Provincia fija --}}
                         <div>
-                            <label class="block text-xs uppercase tracking-widest mb-2">Provincia *</label>
-                            <input type="text" name="province" value="{{ old('province') }}"
-                                   class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon" required>
+                            <label class="block text-xs uppercase tracking-widest mb-2">Provincia</label>
+                            <input type="text" name="province" value="Lima" readonly
+                                   class="w-full border border-stone/20 px-4 py-3 text-sm bg-stone/5 text-stone cursor-not-allowed">
                         </div>
-                        <div>
+                        {{-- Distrito select --}}
+                        <div class="sm:col-span-2">
                             <label class="block text-xs uppercase tracking-widest mb-2">Distrito *</label>
-                            <input type="text" name="district" value="{{ old('district') }}"
-                                   class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon" required>
+                            <select name="district" required
+                                    class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon bg-white appearance-none">
+                                <option value="">— Selecciona tu distrito —</option>
+                                @foreach($limaDistricts as $d)
+                                    <option value="{{ $d }}" {{ old('district') === $d ? 'selected' : '' }}>{{ $d }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs uppercase tracking-widest mb-2">Dirección *</label>
                             <input type="text" name="address" value="{{ old('address') }}"
-                                   placeholder="Calle, número, piso/depto..."
+                                   placeholder="Ej: Av. Larco 345, Dpto 302..."
                                    class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon" required>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs uppercase tracking-widest mb-2">Referencia</label>
                             <input type="text" name="reference" value="{{ old('reference') }}"
-                                   placeholder="Cerca al parque, color de la casa..."
+                                   placeholder="Cerca al parque, frente al banco..."
                                    class="w-full border border-stone/30 px-4 py-3 text-sm focus:outline-none focus:border-carbon">
                         </div>
                     </div>

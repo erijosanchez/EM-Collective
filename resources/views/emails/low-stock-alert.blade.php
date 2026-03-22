@@ -13,8 +13,8 @@
 <div style="display:flex;gap:16px;margin-bottom:28px">
 <table width="100%" cellpadding="0" cellspacing="0">
 <tr>
-    <td width="33%" style="text-align:center;padding:16px;background:#FEF3EC;border-left:3px solid #C4714A">
-        <div style="font-size:28px;font-weight:700;color:#C4714A;font-family:Georgia,serif">{{ $products->count() }}</div>
+    <td width="33%" style="text-align:center;padding:16px;background:#FEF0EE;border-left:3px solid #E84B3A">
+        <div style="font-size:28px;font-weight:700;color:#E84B3A;font-family:Georgia,serif">{{ $products->count() }}</div>
         <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#8A8880;margin-top:4px">Productos</div>
     </td>
     <td width="4px"></td>
@@ -49,7 +49,7 @@
             $stock = $product->total_stock;
             $threshold = $product->low_stock_threshold;
             $isOut = $stock === 0;
-            $statusColor = $isOut ? '#C4714A' : '#8A8880';
+            $statusColor = $isOut ? '#E84B3A' : '#8A8880';
             $statusBg = $isOut ? '#FEF3EC' : '#F5F0E8';
             $statusText = $isOut ? '🔴 Sin stock' : '🟡 Bajo';
         @endphp

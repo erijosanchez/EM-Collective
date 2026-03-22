@@ -65,11 +65,11 @@ class CheckoutService
                     'product_variant_id' => $cartItem->product_variant_id,
                     'product_name'       => $product->name,
                     'product_sku'        => $variant?->sku ?? $product->sku,
-                    'variant_label'      => $variant?->label,
+                    'variant_info'       => $variant?->label,
                     'product_image'      => $product->primary_image,
                     'unit_price'         => $cartItem->unit_price,
                     'quantity'           => $cartItem->quantity,
-                    'subtotal'           => $cartItem->line_total,
+                    'total'              => $cartItem->line_total,
                 ]);
 
                 // Reducir stock de la variante

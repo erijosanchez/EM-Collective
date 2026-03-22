@@ -26,7 +26,7 @@
             @foreach($steps as $i => $step)
             <td style="text-align: center; padding: 0 4px; width: 25%;">
                 <div style="width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 8px;
-                     background: {{ $step['done'] ? '#C4714A' : '#e8e3da' }};
+                     background: {{ $step['done'] ? '#B85C38' : '#e8e3da' }};
                      display: flex; align-items: center; justify-content: center;">
                     @if($step['done'])
                     <span style="color: white; font-size: 16px;">✓</span>

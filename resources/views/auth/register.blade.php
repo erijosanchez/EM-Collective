@@ -1,52 +1,78 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+
+    <div class="anim-up mb-8">
+        <h1 class="font-serif text-3xl text-carbon">Crear cuenta</h1>
+        <p class="text-stone text-sm mt-1">Únete a EM Collective y empieza a comprar</p>
+    </div>
+
+    <form method="POST" action="{{ route('register') }}" class="space-y-5 anim-up-2">
         @csrf
 
-        <!-- Name -->
+        {{-- Name --}}
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <label class="auth-label" for="name">Nombre completo</label>
+            <input id="name" type="text" name="name" value="{{ old('name') }}"
+                   class="auth-input {{ $errors->has('name') ? 'error' : '' }}"
+                   placeholder="Tu nombre"
+                   required autofocus autocomplete="name">
+            @error('name')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        {{-- Email --}}
+        <div>
+            <label class="auth-label" for="email">Correo electrónico</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}"
+                   class="auth-input {{ $errors->has('email') ? 'error' : '' }}"
+                   placeholder="tucorreo@email.com"
+                   required autocomplete="username">
+            @error('email')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        {{-- Password --}}
+        <div>
+            <label class="auth-label" for="password">Contraseña</label>
+            <input id="password" type="password" name="password"
+                   class="auth-input {{ $errors->has('password') ? 'error' : '' }}"
+                   placeholder="Mínimo 8 caracteres"
+                   required autocomplete="new-password">
+            @error('password')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        {{-- Confirm Password --}}
+        <div>
+            <label class="auth-label" for="password_confirmation">Confirmar contraseña</label>
+            <input id="password_confirmation" type="password" name="password_confirmation"
+                   class="auth-input {{ $errors->has('password_confirmation') ? 'error' : '' }}"
+                   placeholder="Repite tu contraseña"
+                   required autocomplete="new-password">
+            @error('password_confirmation')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+        {{-- Terms note --}}
+        <p class="text-[11px] text-stone leading-relaxed">
+            Al registrarte aceptas nuestros
+            <a href="#" class="underline hover:text-carbon">Términos de uso</a>
+            y la
+            <a href="#" class="underline hover:text-carbon">Política de privacidad</a>.
+        </p>
+
+        <button type="submit" class="auth-btn">Crear cuenta</button>
+
+        {{-- Login link --}}
+        <p class="text-center text-xs text-stone">
+            ¿Ya tienes cuenta?&nbsp;
+            <a href="{{ route('login') }}" class="text-carbon font-medium hover:text-blue transition-colors underline underline-offset-2">
+                Inicia sesión
             </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        </p>
     </form>
+
 </x-guest-layout>

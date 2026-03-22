@@ -46,7 +46,7 @@ a { text-decoration:none; }
   animation: shimmerBtn 3s linear infinite;
 }
 .btn-terracota {
-  background: linear-gradient(90deg, #C4714A 0%, #d4825c 25%, #C4714A 50%, #d4825c 75%, #C4714A 100%);
+  background: linear-gradient(90deg, #B85C38 0%, #9e4a2a 25%, #B85C38 50%, #9e4a2a 75%, #B85C38 100%);
   background-size: 200% auto;
   animation: shimmerBtn 3s linear infinite, pulseGlow 2s ease-in-out infinite;
 }
@@ -75,14 +75,14 @@ a { text-decoration:none; }
   margin-bottom:16px;
 }
 .header-line { flex:1; height:1px; background:rgba(245,240,232,0.15); max-width:60px; }
-.header-dot  { width:4px; height:4px; background:#C4714A; border-radius:50%; }
+.header-dot  { width:4px; height:4px; background:#B85C38; border-radius:50%; }
 .logo-text   { font-family:Georgia,'Times New Roman',serif; color:#F5F0E8; font-size:28px; font-weight:300; letter-spacing:0.3em; text-transform:uppercase; }
 .logo-sub    { color:#8A8880; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; margin-top:6px; }
 
 /* Accent strip */
 .accent-strip {
   height:4px;
-  background:linear-gradient(90deg, #C4714A, #d4825c, #C4714A);
+  background:linear-gradient(90deg, #B85C38, #9e4a2a, #B85C38);
   background-size:200% auto;
   animation: shimmerBtn 4s linear infinite;
 }
@@ -110,7 +110,7 @@ a { text-decoration:none; }
   border-radius:50%;
   background:rgba(196,113,74,0.05);
 }
-.hero-eyebrow { color:#C4714A; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; }
+.hero-eyebrow { color:#B85C38; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; }
 .hero-title   { font-family:Georgia,'Times New Roman',serif; color:#F5F0E8; font-size:32px; font-weight:300; line-height:1.25; margin-bottom:10px; }
 .hero-subtitle { color:#8A8880; font-size:14px; line-height:1.6; }
 
@@ -131,7 +131,7 @@ a { text-decoration:none; }
 /* Highlight box */
 .highlight-box {
   background:linear-gradient(135deg, #FBF8F3 0%, #F5F0E8 100%);
-  border-left:3px solid #C4714A;
+  border-left:3px solid #B85C38;
   padding:20px 24px;
   margin:20px 0;
   position:relative;
@@ -195,11 +195,11 @@ a { text-decoration:none; }
 .tracker-step  { text-align:center; flex:1; }
 .tracker-dot-wrap { position:relative; display:flex; justify-content:center; margin-bottom:8px; }
 .tracker-dot  { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; }
-.dot-done     { background:#C4714A; }
+.dot-done     { background:#B85C38; }
 .dot-active   { background:#1A1A18; animation:pulseGlow 2s ease-in-out infinite; }
 .dot-pending  { background:#D5CFC6; }
 .tracker-line { flex:1; height:2px; background:#EDE8DF; margin-top:-22px; }
-.tracker-line.done { background:#C4714A; }
+.tracker-line.done { background:#B85C38; }
 .tracker-label { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#8A8880; }
 .tracker-label.active { color:#1A1A18; font-weight:600; }
 
@@ -214,7 +214,7 @@ a { text-decoration:none; }
 .email-footer { background:#111110; padding:32px 40px; text-align:center; }
 .footer-logo  { font-family:Georgia,serif; color:#F5F0E8; font-size:18px; font-weight:300; letter-spacing:0.3em; margin-bottom:16px; }
 .footer-links { margin-bottom:16px; }
-.footer-links a { color:#C4714A; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin:0 10px; }
+.footer-links a { color:#B85C38; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin:0 10px; }
 .social-icons { margin-bottom:20px; }
 .social-icons a {
   display:inline-block;
@@ -332,10 +332,10 @@ a { text-decoration:none; }
         </div>
 
         <div class="footer-links">
-            <a href="{{ url('/') }}" style="color:#C4714A;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">Tienda</a>
-            <a href="{{ route('product.search') }}?on_sale=1" style="color:#C4714A;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">Ofertas</a>
+            <a href="{{ url('/') }}" style="color:#B85C38;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">Tienda</a>
+            <a href="{{ route('product.search') }}?on_sale=1" style="color:#B85C38;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">Ofertas</a>
             @if(\App\Models\Setting::get('store_whatsapp'))
-            <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#C4714A;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">WhatsApp</a>
+            <a href="https://wa.me/{{ preg_replace('/\D/','',$wa=\App\Models\Setting::get('store_whatsapp')) }}" style="color:#B85C38;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin:0 10px">WhatsApp</a>
             @endif
         </div>
 

@@ -120,7 +120,7 @@ new Chart(ctx, {
         datasets: [{
             label: 'Ventas (S/)',
             data: @json($chartData),
-            backgroundColor: '#C4714A',
+            backgroundColor: '#B85C38',
             borderRadius: 2,
         }]
     },
