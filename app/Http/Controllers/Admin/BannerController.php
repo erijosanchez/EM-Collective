@@ -17,7 +17,8 @@ class BannerController extends Controller
 
     public function create()
     {
-        return view('admin.banners.form');
+        $banner = new Banner();
+        return view('admin.banners.form', compact('banner'));
     }
 
     public function store(Request $request)
@@ -83,7 +84,7 @@ class BannerController extends Controller
             'button_url'    => 'nullable|string|max:300',
             'image'         => 'nullable|image|max:4096',
             'mobile_image'  => 'nullable|image|max:2048',
-            'position'      => 'required|in:hero,mid_home,category',
+            'position'      => 'required|in:hero,mid_home,sidebar,popup,category_top',
             'sort_order'    => 'nullable|integer',
             'is_active'     => 'nullable|boolean',
             'starts_at'     => 'nullable|date',

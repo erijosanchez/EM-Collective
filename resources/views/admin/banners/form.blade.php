@@ -1,17 +1,17 @@
 @extends('admin.layouts.admin')
-@section('title', isset($banner) ? 'Editar Banner' : 'Nuevo Banner')
+@section('title', $banner->exists ? 'Editar Banner' : 'Nuevo Banner')
 
 @section('content')
 <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('admin.banners.index') }}" class="text-stone hover:text-cream">←</a>
-    <h1 class="font-serif text-3xl font-light">{{ isset($banner) ? 'Editar Banner' : 'Nuevo Banner' }}</h1>
+    <h1 class="font-serif text-3xl font-light">{{ $banner->exists ? 'Editar Banner' : 'Nuevo Banner' }}</h1>
 </div>
 
 <div class="max-w-2xl">
-    <form action="{{ isset($banner) ? route('admin.banners.update', $banner) : route('admin.banners.store') }}"
+    <form action="{{ $banner->exists ? route('admin.banners.update', $banner) : route('admin.banners.store') }}"
           method="POST" enctype="multipart/form-data" class="card p-6 space-y-4">
         @csrf
-        @if(isset($banner)) @method('PUT') @endif
+        @if($banner->exists) @method('PUT') @endif
 
         <div>
             <label class="form-label">Título *</label>
@@ -36,12 +36,14 @@
             <select name="position" class="form-input" required>
                 <option value="hero" {{ old('position', $banner->position ?? 'hero') === 'hero' ? 'selected' : '' }}>Hero (inicio principal)</option>
                 <option value="mid_home" {{ old('position', $banner->position ?? '') === 'mid_home' ? 'selected' : '' }}>Medio del inicio</option>
-                <option value="category" {{ old('position', $banner->position ?? '') === 'category' ? 'selected' : '' }}>Categoría</option>
+                <option value="sidebar" {{ old('position', $banner->position ?? '') === 'sidebar' ? 'selected' : '' }}>Sidebar</option>
+                <option value="popup" {{ old('position', $banner->position ?? '') === 'popup' ? 'selected' : '' }}>Popup</option>
+                <option value="category_top" {{ old('position', $banner->position ?? '') === 'category_top' ? 'selected' : '' }}>Top de categoría</option>
             </select>
         </div>
         <div>
             <label class="form-label">Imagen desktop</label>
-            @if(isset($banner) && $banner->image)
+            @if($banner->exists && $banner->image)
             <img src="{{ asset('storage/' . $banner->image) }}" class="h-24 object-cover mb-2">
             @endif
             <input type="file" name="image" accept="image/*" class="form-input">
@@ -49,7 +51,7 @@
         </div>
         <div>
             <label class="form-label">Imagen mobile</label>
-            @if(isset($banner) && $banner->mobile_image)
+            @if($banner->exists && $banner->mobile_image)
             <img src="{{ asset('storage/' . $banner->mobile_image) }}" class="h-24 object-cover mb-2">
             @endif
             <input type="file" name="mobile_image" accept="image/*" class="form-input">
@@ -76,7 +78,7 @@
         </label>
         <div class="flex gap-3 pt-2">
             <button type="submit" class="btn-admin btn-admin-primary">
-                {{ isset($banner) ? 'Guardar cambios' : 'Crear banner' }}
+                {{ $banner->exists ? 'Guardar cambios' : 'Crear banner' }}
             </button>
             <a href="{{ route('admin.banners.index') }}" class="btn-admin btn-admin-ghost">Cancelar</a>
         </div>
