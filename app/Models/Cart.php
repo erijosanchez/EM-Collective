@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cart extends Model
 {
-    protected $fillable = ['user_id', 'session_id', 'coupon_id'];
+    protected $fillable = ['user_id', 'session_id', 'coupon_id', 'user_email', 'abandoned_email_sent', 'last_active_at'];
+
+    protected $casts = ['last_active_at' => 'datetime', 'abandoned_email_sent' => 'boolean'];
 
     // ─── Relationships ────────────────────────────────────────────────────
 

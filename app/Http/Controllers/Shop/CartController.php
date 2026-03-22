@@ -33,6 +33,9 @@ class CartController extends Controller
             $request->variant_id
         );
 
+        // Registrar actividad para tracking de carrito abandonado
+        $this->touchCart();
+
         if ($request->ajax()) {
             return response()->json($result, $result['success'] ? 200 : 422);
         }
@@ -106,5 +109,24 @@ class CartController extends Controller
         }
 
         return back()->with('success', 'Cupón eliminado.');
+    }
+
+    // ─── Helpers ──────────────────────────────────────────────────────────
+
+    protected function touchCart(): void
+    {
+        try {
+            $cart = $this->cartService->getCart();
+            $data = ['last_active_at' => now(), 'abandoned_email_sent' => false];
+
+            // Guardar email del usuario autenticado para el tracking
+            if (auth()->check() && !$cart->user_email) {
+                $data['user_email'] = auth()->user()->email;
+            }
+
+            $cart->update($data);
+        } catch (\Exception) {
+            // No interrumpir el flujo si falla el tracking
+        }
     }
 }
