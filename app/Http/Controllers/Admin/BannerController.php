@@ -30,7 +30,7 @@ class BannerController extends Controller
         }
 
         if ($request->hasFile('mobile_image')) {
-            $data['mobile_image'] = $request->file('mobile_image')->store('banners', 'public');
+            $data['image_mobile'] = $request->file('mobile_image')->store('banners', 'public');
         }
 
         Banner::create($data);
@@ -54,8 +54,8 @@ class BannerController extends Controller
         }
 
         if ($request->hasFile('mobile_image')) {
-            if ($banner->mobile_image) Storage::disk('public')->delete($banner->mobile_image);
-            $data['mobile_image'] = $request->file('mobile_image')->store('banners', 'public');
+            if ($banner->image_mobile) Storage::disk('public')->delete($banner->image_mobile);
+            $data['image_mobile'] = $request->file('mobile_image')->store('banners', 'public');
         }
 
         $banner->update($data);
@@ -85,6 +85,7 @@ class BannerController extends Controller
             'image'         => 'nullable|image|max:4096',
             'mobile_image'  => 'nullable|image|max:2048',
             'position'      => 'required|in:hero,mid_home,sidebar,popup,category_top',
+            'text_align'    => 'nullable|in:left,center,right',
             'sort_order'    => 'nullable|integer',
             'is_active'     => 'nullable|boolean',
             'starts_at'     => 'nullable|date',
@@ -93,6 +94,7 @@ class BannerController extends Controller
 
         $data['is_active']   = $request->boolean('is_active', true);
         $data['sort_order']  = $data['sort_order'] ?? 0;
+        $data['text_align']  = $data['text_align'] ?? 'left';
 
         return $data;
     }

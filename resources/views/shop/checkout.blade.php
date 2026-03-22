@@ -2,14 +2,14 @@
 @section('title', 'Checkout | EM Collective')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-12"
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12"
      x-data="{
         paymentMethod: '{{ old('payment_method', 'mercadopago') }}',
         loading: false,
         useAddress: '',
      }">
 
-    <h1 class="font-serif text-4xl font-light mb-8">Finalizar Compra</h1>
+    <h1 class="font-serif text-2xl sm:text-4xl font-light mb-6 sm:mb-8">Finalizar Compra</h1>
 
     @if($errors->any())
     <div class="bg-terracota/10 border border-terracota/30 text-terracota text-sm p-4 mb-6 space-y-1">
@@ -21,10 +21,10 @@
 
     <form action="{{ route('checkout.store') }}" method="POST" @submit="loading = true">
         @csrf
-        <div class="grid lg:grid-cols-3 gap-10">
+        <div class="grid lg:grid-cols-3 gap-6 lg:gap-10">
 
             {{-- Formulario --}}
-            <div class="lg:col-span-2 space-y-8">
+            <div class="lg:col-span-2 space-y-8 order-2 lg:order-1">
 
                 {{-- Datos personales --}}
                 <div>
@@ -173,11 +173,11 @@
             </div>
 
             {{-- Resumen lateral sticky --}}
-            <div>
-                <div class="bg-white border border-stone/10 p-6 sticky top-24">
+            <div class="order-1 lg:order-2">
+                <div class="bg-white border border-stone/10 p-4 sm:p-6 lg:sticky lg:top-24">
                     <h3 class="font-serif text-xl font-light mb-6">Tu pedido</h3>
 
-                    <div class="space-y-4 max-h-64 overflow-y-auto mb-6">
+                    <div class="space-y-4 max-h-48 sm:max-h-64 overflow-y-auto mb-6">
                         @foreach($cart->items as $item)
                         <div class="flex gap-3">
                             <div class="w-14 h-16 bg-stone/10 flex-shrink-0 overflow-hidden">

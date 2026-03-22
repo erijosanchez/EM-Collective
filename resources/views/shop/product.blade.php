@@ -1,7 +1,43 @@
 @extends('layouts.shop')
 
 @section('title', $product->meta_title ?? $product->name . ' | EM Collective')
-@section('description', $product->meta_description ?? $product->description)
+@section('description', $product->meta_description ?? Str::limit(strip_tags($product->description), 160))
+@section('og_type', 'product')
+@section('og_title', $product->name . ' | EM Collective')
+@section('og_description', Str::limit(strip_tags($product->description ?? ''), 160))
+@section('og_image', $product->images->first() ? asset('storage/' . $product->images->first()->path) : asset('img/og-default.jpg'))
+
+@section('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ addslashes($product->name) }}",
+  "description": "{{ addslashes(Str::limit(strip_tags($product->description ?? ''), 300)) }}",
+  "sku": "{{ $product->sku }}",
+  "brand": { "@type": "Brand", "name": "{{ $product->brand?->name ?? 'EM Collective' }}" },
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ route('product.show', $product->slug) }}",
+    "priceCurrency": "PEN",
+    "price": "{{ $product->current_price }}",
+    "availability": "{{ $product->total_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
+  }
+  @if($product->images->first())
+  ,"image": "{{ asset('storage/' . $product->images->first()->path) }}"
+  @endif
+  @if($product->approvedReviews->count())
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ number_format($product->average_rating, 1) }}",
+    "reviewCount": "{{ $product->approvedReviews->count() }}"
+  }
+  @endif
+}
+</script>
+@endsection
+
+@php use Illuminate\Support\Str; @endphp
 
 @section('content')
 
@@ -18,7 +54,7 @@
         <span class="text-carbon">{{ $product->name }}</span>
     </nav>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
 
         {{-- Galería --}}
         <div x-data="{ active: 0 }" class="flex flex-col-reverse sm:flex-row gap-4">
@@ -104,7 +140,7 @@
             <p class="text-terracota text-xs uppercase tracking-widest mb-2">{{ $product->brand->name }}</p>
             @endif
 
-            <h1 class="font-serif text-4xl font-light leading-tight mb-4">{{ $product->name }}</h1>
+            <h1 class="font-serif text-2xl sm:text-3xl lg:text-4xl font-light leading-tight mb-4">{{ $product->name }}</h1>
 
             {{-- Precio --}}
             <div class="flex items-center gap-3 mb-6">
@@ -150,7 +186,7 @@
                             'opacity-40 cursor-not-allowed': !colorInStock({{ $color->id }})
                         }"
                         title="{{ $color->name }}"
-                        class="w-8 h-8 rounded-full border border-stone/30 transition-all"
+                        class="w-10 h-10 sm:w-8 sm:h-8 rounded-full border border-stone/30 transition-all"
                         style="background: {{ $color->hex_code }}">
                     </button>
                     @endforeach
@@ -175,7 +211,7 @@
                             'border-stone/30 text-stone line-through cursor-not-allowed': !sizeInStock({{ $size->id }}),
                             'border-stone/30 text-carbon hover:border-carbon': sizeInStock({{ $size->id }}) && selectedSize !== {{ $size->id }}
                         }"
-                        class="px-3 py-2 border text-xs uppercase tracking-wider min-w-[3rem] transition-all">
+                        class="px-3 py-3 sm:py-2 border text-xs uppercase tracking-wider min-w-[3rem] transition-all">
                         {{ $size->name }}
                     </button>
                     @endforeach
@@ -267,7 +303,8 @@
                         </svg>
                     </button>
                     <div x-show="open" x-transition class="pb-4 text-stone text-sm">
-                        <table class="w-full text-xs">
+                        <div class="overflow-x-auto">
+                        <table class="w-full text-xs min-w-[280px]">
                             <thead>
                                 <tr class="border-b border-stone/20">
                                     <th class="py-2 text-left uppercase tracking-wider">Talla</th>
@@ -283,6 +320,7 @@
                                 <tr><td class="py-1.5">XL</td><td>100-103 cm</td><td>81-84 cm</td></tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

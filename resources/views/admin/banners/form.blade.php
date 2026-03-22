@@ -42,6 +42,21 @@
             </select>
         </div>
         <div>
+            <label class="form-label">Alineación del texto</label>
+            <div class="flex gap-2 mt-1">
+                @foreach(['left' => ['←', 'Izquierda'], 'center' => ['↔', 'Centro'], 'right' => ['→', 'Derecha']] as $val => [$icon, $label])
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="text_align" value="{{ $val }}" class="sr-only peer"
+                           {{ old('text_align', $banner->text_align ?? 'left') === $val ? 'checked' : '' }}>
+                    <div class="text-center border border-stone/30 py-2 px-3 text-sm peer-checked:border-terracota peer-checked:bg-terracota/10 peer-checked:text-terracota transition rounded hover:border-stone">
+                        <span class="block text-lg">{{ $icon }}</span>
+                        <span class="text-xs">{{ $label }}</span>
+                    </div>
+                </label>
+                @endforeach
+            </div>
+        </div>
+        <div>
             <label class="form-label">Imagen desktop</label>
             @if($banner->exists && $banner->image)
             <img src="{{ asset('storage/' . $banner->image) }}" class="h-24 object-cover mb-2">

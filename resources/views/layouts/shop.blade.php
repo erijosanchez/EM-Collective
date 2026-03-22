@@ -7,6 +7,22 @@
     <title>@yield('title', \App\Models\Setting::get('seo_home_title', 'EM Collective'))</title>
     <meta name="description" content="@yield('description', \App\Models\Setting::get('seo_home_description', ''))">
 
+    {{-- Open Graph --}}
+    <meta property="og:type"        content="@yield('og_type', 'website')">
+    <meta property="og:title"       content="@yield('og_title', \App\Models\Setting::get('seo_home_title', 'EM Collective'))">
+    <meta property="og:description" content="@yield('og_description', \App\Models\Setting::get('seo_home_description', ''))">
+    <meta property="og:url"         content="{{ url()->current() }}">
+    <meta property="og:image"       content="@yield('og_image', asset('img/og-default.jpg'))">
+    <meta property="og:site_name"   content="EM Collective">
+    <meta property="og:locale"      content="es_PE">
+    {{-- Twitter Card --}}
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="@yield('og_title', \App\Models\Setting::get('seo_home_title', 'EM Collective'))">
+    <meta name="twitter:description" content="@yield('og_description', \App\Models\Setting::get('seo_home_description', ''))">
+    <meta name="twitter:image"       content="@yield('og_image', asset('img/og-default.jpg'))">
+    {{-- JSON-LD base --}}
+    @yield('json_ld')
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,8 +89,7 @@
         .img-hover img { transition: transform 0.4s ease; }
         .img-hover:hover img { transform: scale(1.05); }
         /* Mega-menú */
-        .mega-menu { display: none; position: absolute; left: 0; right: 0; top: 100%; background: #1A1A18; color: #F5F0E8; z-index: 50; }
-        .mega-trigger:hover .mega-menu { display: block; }
+        .mega-dropdown { background: #1A1A18; color: #F5F0E8; border-top: 1px solid rgba(138,136,128,0.2); }
         /* Cart badge */
         .cart-badge { background: #C4714A; }
     </style>
@@ -91,12 +106,16 @@
 @endif
 
 {{-- NAVBAR --}}
-<header class="sticky top-0 z-40 bg-cream border-b border-stone/20" x-data="{ mobileOpen: false, searchOpen: false }">
+<header class="sticky top-0 z-40 bg-cream border-b border-stone/20"
+        x-data="{ mobileOpen: false, searchOpen: false, activeMenu: null }"
+        @keydown.escape.window="activeMenu = null; searchOpen = false">
+
+    {{-- Barra principal --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-between h-16">
 
-            {{-- Mobile menu button --}}
-            <button @click="mobileOpen = true" class="lg:hidden p-2 text-carbon">
+            {{-- Hamburger (mobile) --}}
+            <button @click="mobileOpen = true" class="lg:hidden p-2 text-carbon" aria-label="Menú">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
@@ -108,60 +127,52 @@
             </a>
 
             {{-- Desktop Nav --}}
-            <nav class="hidden lg:flex items-center space-x-8">
+            <nav class="hidden lg:flex items-center gap-8">
                 @foreach($navCategories as $cat)
-                <div class="mega-trigger relative group">
+                <div @mouseenter="activeMenu = '{{ $cat->slug }}'"
+                     @mouseleave="activeMenu = null"
+                     class="flex items-center h-16">
                     <a href="{{ route('category.show', $cat->slug) }}"
-                       class="text-xs uppercase tracking-widest text-carbon hover:text-terracota transition-colors py-5 block">
+                       class="text-xs uppercase tracking-widest transition-colors py-1 border-b-2 border-transparent"
+                       :class="activeMenu === '{{ $cat->slug }}' ? 'text-terracota border-terracota' : 'text-carbon hover:text-terracota'">
                         {{ $cat->name }}
                     </a>
-                    @if($cat->children->count())
-                    <div class="mega-menu">
-                        <div class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-4 gap-6">
-                            @foreach($cat->children as $child)
-                            <a href="{{ route('category.show', $cat->slug) }}?sub={{ $child->slug }}"
-                               class="text-sm text-stone hover:text-cream transition-colors">
-                                {{ $child->name }}
-                            </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
                 </div>
                 @endforeach
             </nav>
 
             {{-- Actions --}}
-            <div class="flex items-center space-x-4">
-                {{-- Search --}}
-                <button @click="searchOpen = !searchOpen" class="p-2 text-carbon hover:text-terracota transition-colors">
+            <div class="flex items-center gap-1">
+                {{-- Buscar --}}
+                <button @click="searchOpen = !searchOpen; activeMenu = null"
+                        class="p-2 text-carbon hover:text-terracota transition-colors" aria-label="Buscar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </button>
 
-                {{-- Account --}}
+                {{-- Cuenta --}}
                 @auth
-                <a href="{{ route('account.index') }}" class="hidden sm:block p-2 text-carbon hover:text-terracota transition-colors">
+                <a href="{{ route('account.index') }}" class="hidden sm:flex p-2 text-carbon hover:text-terracota transition-colors" aria-label="Mi cuenta">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                 </a>
                 @else
-                <a href="{{ route('login') }}" class="hidden sm:block p-2 text-carbon hover:text-terracota transition-colors">
+                <a href="{{ route('login') }}" class="hidden sm:flex p-2 text-carbon hover:text-terracota transition-colors" aria-label="Iniciar sesión">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                 </a>
                 @endauth
 
-                {{-- Cart --}}
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-carbon hover:text-terracota transition-colors">
+                {{-- Carrito --}}
+                <a href="{{ route('cart.index') }}" class="relative p-2 text-carbon hover:text-terracota transition-colors" aria-label="Carrito">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                     @if($cartCount > 0)
-                    <span class="cart-badge absolute -top-1 -right-1 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
+                    <span class="cart-badge absolute -top-1 -right-1 text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
                         {{ $cartCount }}
                     </span>
                     @endif
@@ -169,16 +180,27 @@
             </div>
         </div>
 
-        {{-- Search Bar --}}
-        <div x-show="searchOpen" x-transition class="pb-4">
+        {{-- Barra de búsqueda --}}
+        <div x-show="searchOpen"
+             x-transition:enter="transition ease-out duration-150"
+             x-transition:enter-start="opacity-0 -translate-y-1"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-100"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             style="display:none" class="pb-4">
             <form action="{{ route('product.search') }}" method="GET">
-                <div class="flex border-b border-carbon">
+                <div class="flex items-center border-b border-carbon gap-2">
+                    <svg class="w-4 h-4 text-stone flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
                     <input type="text" name="q" placeholder="Buscar productos..."
                            class="flex-1 bg-transparent py-2 text-sm focus:outline-none font-sans"
-                           autofocus>
-                    <button type="submit" class="p-2 text-stone hover:text-carbon">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                           x-ref="searchInput"
+                           @show.window="$nextTick(() => $refs.searchInput?.focus())">
+                    <button type="button" @click="searchOpen = false" class="p-1 text-stone hover:text-carbon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </button>
                 </div>
@@ -186,50 +208,128 @@
         </div>
     </div>
 
-    {{-- Mobile Drawer --}}
-    <div x-show="mobileOpen" class="fixed inset-0 z-50 lg:hidden" @click.away="mobileOpen = false">
+    {{-- ── Mega-menús desktop (fuera del trigger, anchos a todo el header) ── --}}
+    @foreach($navCategories as $cat)
+    @if($cat->children->count())
+    <div x-show="activeMenu === '{{ $cat->slug }}'"
+         @mouseenter="activeMenu = '{{ $cat->slug }}'"
+         @mouseleave="activeMenu = null"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0 -translate-y-1"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         style="display:none"
+         class="mega-dropdown w-full shadow-xl">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex items-start gap-12">
+                {{-- Título de la categoría padre --}}
+                <div class="flex-shrink-0 w-40">
+                    <p class="text-stone text-xs uppercase tracking-widest mb-1">Explorar</p>
+                    <a href="{{ route('category.show', $cat->slug) }}"
+                       class="font-serif text-2xl text-cream font-light hover:text-terracota transition-colors">
+                        {{ $cat->name }}
+                    </a>
+                </div>
+                {{-- Subcategorías --}}
+                <div class="flex-1 grid grid-cols-3 gap-x-8 gap-y-3">
+                    @foreach($cat->children as $child)
+                    <a href="{{ route('category.show', $cat->slug) }}?sub={{ $child->slug }}"
+                       class="group flex items-center gap-2 text-sm text-stone hover:text-cream transition-colors py-0.5">
+                        <span class="block w-0 h-px bg-terracota group-hover:w-3 transition-all duration-200 flex-shrink-0"></span>
+                        {{ $child->name }}
+                    </a>
+                    @endforeach
+                </div>
+                {{-- CTA --}}
+                <div class="flex-shrink-0 text-right">
+                    <a href="{{ route('category.show', $cat->slug) }}"
+                       class="text-xs uppercase tracking-widest text-stone hover:text-cream transition-colors border-b border-stone/40 hover:border-cream pb-0.5">
+                        Ver todo →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endforeach
+
+    {{-- ── Mobile Drawer ── --}}
+    <div x-show="mobileOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         style="display:none"
+         class="fixed inset-0 z-50 lg:hidden">
+        {{-- Overlay --}}
         <div class="fixed inset-0 bg-carbon/60" @click="mobileOpen = false"></div>
-        <div class="fixed left-0 top-0 bottom-0 w-72 bg-cream overflow-y-auto">
+        {{-- Panel --}}
+        <div class="fixed left-0 top-0 bottom-0 w-72 bg-cream overflow-y-auto shadow-2xl"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="-translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="-translate-x-full">
             <div class="flex items-center justify-between p-4 border-b border-stone/20">
-                <span class="font-serif text-xl tracking-widest">EM COLLECTIVE</span>
-                <button @click="mobileOpen = false" class="p-2">
+                <a href="{{ route('home') }}" class="font-serif text-xl tracking-widest text-carbon">EM COLLECTIVE</a>
+                <button @click="mobileOpen = false" class="p-2 text-stone hover:text-carbon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
+
             <nav class="p-4 space-y-1">
                 @foreach($navCategories as $cat)
                 <div x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full py-2 text-xs uppercase tracking-widest text-carbon">
-                        {{ $cat->name }}
+                    <div class="flex items-center justify-between">
+                        <a href="{{ route('category.show', $cat->slug) }}"
+                           class="flex-1 py-2.5 text-xs uppercase tracking-widest text-carbon hover:text-terracota transition-colors">
+                            {{ $cat->name }}
+                        </a>
                         @if($cat->children->count())
-                        <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <button @click="open = !open" class="p-2 text-stone hover:text-carbon transition-colors">
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
                         @endif
-                    </button>
+                    </div>
                     @if($cat->children->count())
-                    <div x-show="open" class="pl-4 space-y-1 mt-1">
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         style="display:none"
+                         class="pl-4 pb-2 space-y-0.5 border-l border-stone/20 ml-1">
                         @foreach($cat->children as $child)
                         <a href="{{ route('category.show', $cat->slug) }}?sub={{ $child->slug }}"
-                           class="block py-1.5 text-sm text-stone hover:text-carbon">{{ $child->name }}</a>
+                           class="block py-2 text-sm text-stone hover:text-carbon transition-colors">
+                            {{ $child->name }}
+                        </a>
                         @endforeach
                     </div>
                     @endif
                 </div>
                 @endforeach
 
-                <div class="pt-4 border-t border-stone/20 space-y-2">
+                <div class="pt-4 mt-2 border-t border-stone/20 space-y-1">
                     @auth
-                    <a href="{{ route('account.index') }}" class="block py-2 text-xs uppercase tracking-widest">Mi Cuenta</a>
+                    <a href="{{ route('account.index') }}" class="block py-2.5 text-xs uppercase tracking-widest text-carbon hover:text-terracota transition-colors">Mi Cuenta</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="text-xs uppercase tracking-widest text-stone">Cerrar Sesión</button>
+                        <button type="submit" class="py-2.5 text-xs uppercase tracking-widest text-stone hover:text-carbon transition-colors">
+                            Cerrar Sesión
+                        </button>
                     </form>
                     @else
-                    <a href="{{ route('login') }}" class="block py-2 text-xs uppercase tracking-widest">Iniciar Sesión</a>
-                    <a href="{{ route('register') }}" class="block py-2 text-xs uppercase tracking-widest text-stone">Crear Cuenta</a>
+                    <a href="{{ route('login') }}" class="block py-2.5 text-xs uppercase tracking-widest text-carbon hover:text-terracota transition-colors">Iniciar Sesión</a>
+                    <a href="{{ route('register') }}" class="block py-2.5 text-xs uppercase tracking-widest text-stone hover:text-carbon transition-colors">Crear Cuenta</a>
                     @endauth
                 </div>
             </nav>
@@ -361,5 +461,27 @@
 
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @yield('scripts')
+
+{{-- ── WhatsApp Flotante ── --}}
+@php $wa = \App\Models\Setting::get('store_whatsapp'); @endphp
+@if($wa)
+<a href="https://wa.me/{{ preg_replace('/\D/', '', $wa) }}?text={{ urlencode('Hola, vi sus productos en la tienda y tengo una consulta 😊') }}"
+   target="_blank" rel="noopener"
+   id="wa-btn"
+   aria-label="Escribir por WhatsApp"
+   style="position:fixed;bottom:24px;right:24px;z-index:999;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:12px 18px;border-radius:50px;box-shadow:0 4px 20px rgba(37,211,102,0.4);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;transition:all 0.3s ease;opacity:0;transform:translateY(20px)">
+    <svg style="width:22px;height:22px;flex-shrink:0" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    <span id="wa-label">¿Necesitas ayuda?</span>
+</a>
+<style>
+    @keyframes waPop { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes waPulse { 0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.4)} 50%{box-shadow:0 4px 30px rgba(37,211,102,0.7)} }
+    #wa-btn { animation: waPop 0.5s 1.5s ease forwards, waPulse 2.5s 2s ease-in-out infinite; }
+    #wa-btn:hover { background:#1da851 !important; transform:translateY(-2px) scale(1.03) !important; }
+    @media(max-width:480px){ #wa-label{ display:none; } #wa-btn{ padding:14px !important; border-radius:50% !important; } }
+</style>
+@endif
 </body>
 </html>

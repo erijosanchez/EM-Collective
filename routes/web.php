@@ -10,6 +10,13 @@ use App\Http\Controllers\Shop\AccountController;
 use App\Http\Controllers\Shop\NewsletterController;
 use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\SitemapController;
+
+// ════════════════════════════════════════════════════════
+// SEO
+// ════════════════════════════════════════════════════════
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // ════════════════════════════════════════════════════════
 // TIENDA PÚBLICA

@@ -17,6 +17,7 @@ class Banner extends Model
         'target_category_slug',
         'bg_color',
         'text_color',
+        'text_align',
         'sort_order',
         'is_active',
         'starts_at',

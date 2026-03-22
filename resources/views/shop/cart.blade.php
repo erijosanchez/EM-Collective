@@ -2,8 +2,8 @@
 @section('title', 'Carrito de Compras | EM Collective')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-    <h1 class="font-serif text-4xl font-light mb-8">Carrito de compras</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <h1 class="font-serif text-2xl sm:text-4xl font-light mb-6 sm:mb-8">Carrito de compras</h1>
 
     @if($cart->is_empty)
     {{-- Carrito vacío --}}
@@ -21,13 +21,13 @@
     </div>
     @else
 
-    <div class="grid lg:grid-cols-3 gap-10">
+    <div class="grid lg:grid-cols-3 gap-6 lg:gap-10">
         {{-- Items --}}
         <div class="lg:col-span-2 space-y-4" id="cart-items">
             @foreach($cart->items as $item)
-            <div class="flex gap-4 p-4 bg-white border border-stone/10" id="cart-item-{{ $item->id }}" data-item-id="{{ $item->id }}">
+            <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white border border-stone/10" id="cart-item-{{ $item->id }}" data-item-id="{{ $item->id }}">
                 {{-- Imagen --}}
-                <a href="{{ route('product.show', $item->product->slug) }}" class="flex-shrink-0 w-24 h-28 bg-stone/10 overflow-hidden">
+                <a href="{{ route('product.show', $item->product->slug) }}" class="flex-shrink-0 w-20 h-24 sm:w-24 sm:h-28 bg-stone/10 overflow-hidden">
                     @if($item->product->primary_image)
                     <img src="{{ asset('storage/' . $item->product->primary_image) }}"
                          alt="{{ $item->product->name }}" class="w-full h-full object-cover">
@@ -58,9 +58,9 @@
                     <div class="flex items-center justify-between mt-3">
                         {{-- Cantidad --}}
                         <div class="flex items-center border border-stone/30">
-                            <button onclick="updateQty({{ $item->id }}, {{ $item->quantity - 1 }})" class="px-2 py-1 text-stone hover:text-carbon">−</button>
-                            <span class="px-3 py-1 text-sm border-x border-stone/30">{{ $item->quantity }}</span>
-                            <button onclick="updateQty({{ $item->id }}, {{ $item->quantity + 1 }})" class="px-2 py-1 text-stone hover:text-carbon">+</button>
+                            <button onclick="updateQty({{ $item->id }}, {{ $item->quantity - 1 }})" class="px-3 py-2 text-stone hover:text-carbon min-w-[2.5rem] text-center">−</button>
+                            <span class="px-3 py-2 text-sm border-x border-stone/30 min-w-[2.5rem] text-center">{{ $item->quantity }}</span>
+                            <button onclick="updateQty({{ $item->id }}, {{ $item->quantity + 1 }})" class="px-3 py-2 text-stone hover:text-carbon min-w-[2.5rem] text-center">+</button>
                         </div>
 
                         {{-- Precio --}}
@@ -78,7 +78,7 @@
 
         {{-- Resumen --}}
         <div>
-            <div class="bg-white border border-stone/10 p-6 sticky top-24">
+            <div class="bg-white border border-stone/10 p-4 sm:p-6 lg:sticky lg:top-24">
                 <h2 class="font-serif text-2xl font-light mb-6">Resumen del pedido</h2>
 
                 {{-- Envío gratis progress --}}
