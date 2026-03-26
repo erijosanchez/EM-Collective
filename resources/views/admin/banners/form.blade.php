@@ -115,56 +115,93 @@
                 @endforeach
             </div>
         </div>
-        {{-- ── Fondo del bloque de texto ── --}}
+        {{-- ── Fondo del título ── --}}
         <div x-data="{
             bgColor:   '{{ old('text_bg_color',   $banner->text_bg_color   ?? '#000000') }}',
             bgOpacity: {{ old('text_bg_opacity', $banner->text_bg_opacity ?? 0) }},
-            get previewStyle() {
-                if (this.bgOpacity === 0) return 'padding:0.75rem 1.25rem';
+            bgRadius:  '{{ old('text_bg_radius',  $banner->text_bg_radius  ?? 'md') }}',
+            get boxStyle() {
+                const radii = { none: '0', md: '0.5rem', lg: '9999px' };
+                if (this.bgOpacity === 0) return '';
                 const h = this.bgColor.replace('#','');
                 const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
-                return `background:rgba(${r},${g},${b},${this.bgOpacity/100});padding:0.75rem 1.25rem;border-radius:0.5rem`;
+                return `width:fit-content;max-width:100%;background:rgba(${r},${g},${b},${this.bgOpacity/100});padding:0.5rem 1rem;border-radius:${radii[this.bgRadius]}`;
             }
         }">
-            <label class="form-label">Fondo del texto</label>
+            <input type="hidden" name="text_bg_radius" :value="bgRadius">
+            <label class="form-label">Fondo del título</label>
 
-            {{-- Preview --}}
-            <div class="mt-2 h-24 rounded-lg overflow-hidden relative flex items-center justify-center"
-                 style="background: linear-gradient(135deg, #3d3530 0%, #6b5a4e 100%)">
-                <div :style="previewStyle" class="transition-all duration-200">
-                    <p class="text-cream font-serif text-lg leading-tight">Título del banner</p>
-                    <p class="text-cream/70 text-xs mt-0.5">Subtítulo de ejemplo</p>
+            {{-- Preview realista --}}
+            <div class="mt-2 rounded-xl overflow-hidden relative flex items-center px-6 py-5"
+                 style="background:linear-gradient(135deg,#3d3530 0%,#5a4035 50%,#3d3530 100%); min-height:100px">
+                {{-- Simulamos el layout del hero --}}
+                <div>
+                    <p class="text-terracota text-[10px] uppercase tracking-widest mb-2">Nueva Colección</p>
+                    <div :style="boxStyle" class="transition-all duration-200 mb-3">
+                        <p class="text-cream font-serif text-xl leading-snug">Título del banner<br><em class="opacity-80">Subtítulo elegante</em></p>
+                    </div>
+                    <span class="inline-block border border-cream/60 text-cream text-[10px] px-3 py-1 uppercase tracking-widest">Explorar</span>
                 </div>
             </div>
 
-            <div class="mt-3 flex gap-4 items-end">
-                <div>
-                    <p class="text-xs text-stone mb-1">Color</p>
+            {{-- Controles --}}
+            <div class="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 items-center">
+                {{-- Color --}}
+                <p class="text-xs text-stone">Color</p>
+                <div class="flex items-center gap-2">
                     <input type="color" name="text_bg_color" x-model="bgColor"
-                           class="w-10 h-10 rounded-lg border border-stone/30 cursor-pointer p-0.5 bg-transparent">
+                           class="w-9 h-9 rounded-lg border border-stone/30 cursor-pointer p-0.5 bg-transparent flex-shrink-0">
+                    {{-- Presets de color --}}
+                    <div class="flex gap-1.5 flex-wrap">
+                        @foreach(['#000000' => 'Negro', '#FFFFFF' => 'Blanco', '#7C3D2A' => 'Terracota', '#1C3A2A' => 'Verde', '#1A1A2E' => 'Azul'] as $hex => $name)
+                        <button type="button" @click="bgColor='{{ $hex }}'"
+                            :class="bgColor === '{{ $hex }}' ? 'ring-2 ring-offset-1 ring-terracota ring-offset-carbon' : ''"
+                            class="w-6 h-6 rounded-full border border-stone/30 transition flex-shrink-0"
+                            style="background:{{ $hex }}" title="{{ $name }}"></button>
+                        @endforeach
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <p class="text-xs text-stone mb-1">
-                        Opacidad —
-                        <span class="text-cream" x-text="bgOpacity === 0 ? 'Sin fondo' : bgOpacity + '%'"></span>
-                    </p>
+
+                {{-- Opacidad --}}
+                <p class="text-xs text-stone">Opacidad</p>
+                <div class="flex items-center gap-3">
                     <input type="range" name="text_bg_opacity" x-model.number="bgOpacity"
                            min="0" max="90" step="5"
-                           class="w-full accent-terracota cursor-pointer">
+                           class="flex-1 accent-terracota cursor-pointer h-1.5 rounded">
+                    <span class="text-xs text-cream w-16 text-right flex-shrink-0"
+                          x-text="bgOpacity === 0 ? 'Sin fondo' : bgOpacity + '%'"></span>
+                </div>
+
+                {{-- Border radius --}}
+                <p class="text-xs text-stone">Bordes</p>
+                <div class="flex gap-2">
+                    @foreach(['none' => ['Cuadrado', 'M3 5h10v6H3z'], 'md' => ['Suave', 'M5 5h6a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z'], 'lg' => ['Píldora', 'M5 5h6a3 3 0 0 1 0 6H5a3 3 0 0 1 0-6z']] as $val => [$label, $path])
+                    <button type="button" @click="bgRadius='{{ $val }}'"
+                        :class="bgRadius === '{{ $val }}'
+                            ? 'border-terracota bg-terracota/10 text-terracota'
+                            : 'border-stone/30 text-stone hover:border-stone hover:text-cream'"
+                        class="flex items-center gap-1.5 px-3 py-1.5 border rounded text-xs transition">
+                        <svg viewBox="0 0 16 16" class="w-4 h-4 flex-shrink-0" fill="currentColor">
+                            <path d="{{ $path }}"/>
+                        </svg>
+                        {{ $label }}
+                    </button>
+                    @endforeach
                 </div>
             </div>
 
             {{-- Presets rápidos --}}
-            <div class="flex flex-wrap gap-1.5 mt-2">
+            <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-stone/10">
+                <span class="text-xs text-stone self-center mr-1">Presets:</span>
                 @foreach([
-                    ['Sin fondo',    '#000000', 0],
-                    ['Negro suave',  '#000000', 35],
-                    ['Negro fuerte', '#000000', 60],
-                    ['Blanco velo',  '#F5F0E8', 15],
-                    ['Terracota',    '#7C3D2A', 40],
-                ] as [$name, $col, $op])
+                    ['Sin fondo',   '#000000', 0,  'md'],
+                    ['Velo oscuro', '#000000', 40, 'md'],
+                    ['Sólido',      '#000000', 80, 'md'],
+                    ['Crema velo',  '#F5F0E8', 20, 'md'],
+                    ['Terracota',   '#7C3D2A', 50, 'lg'],
+                ] as [$name, $col, $op, $rad])
                 <button type="button"
-                    @click="bgColor='{{ $col }}'; bgOpacity={{ $op }}"
+                    @click="bgColor='{{ $col }}'; bgOpacity={{ $op }}; bgRadius='{{ $rad }}'"
                     class="text-xs px-2.5 py-1 rounded border border-stone/30 text-stone hover:border-stone hover:text-cream transition">
                     {{ $name }}
                 </button>

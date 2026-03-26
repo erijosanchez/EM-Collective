@@ -102,43 +102,66 @@
 
         {{-- Texto del slide --}}
         @php
-            $hAlign      = $hb->text_align     ?? 'left';
-            $vAlign      = $hb->text_valign    ?? 'middle';
-            $fontFam     = $hb->font_family     ?? 'serif';
-            $txtColor    = $hb->text_color;
-            $bgHex       = $hb->text_bg_color;
-            $bgOp        = (int) ($hb->text_bg_opacity ?? 0);
+            $hAlign    = $hb->text_align     ?? 'left';
+            $vAlign    = $hb->text_valign    ?? 'middle';
+            $fontFam   = $hb->font_family    ?? 'serif';
+            $txtColor  = $hb->text_color;
+            $bgHex     = $hb->text_bg_color;
+            $bgOp      = (int) ($hb->text_bg_opacity ?? 0);
+            $bgRad     = $hb->text_bg_radius ?? 'md';
+
             $valignClass = match($vAlign) {
                 'top'    => 'items-start pt-20',
                 'bottom' => 'items-end pb-20',
                 default  => 'items-center',
             };
-            $alignClass  = match($hAlign) {
+            $alignClass = match($hAlign) {
                 'center' => 'mx-auto text-center',
                 'right'  => 'ml-auto text-right',
                 default  => 'text-left',
             };
-            $fontClass   = $fontFam === 'sans' ? 'font-sans' : 'font-serif';
-            $bgStyle     = '';
+            $fontClass = $fontFam === 'sans' ? 'font-sans' : 'font-serif';
+
+            // Fondo solo al título: width:fit-content para abrazar el texto sin romper el flujo
+            $titleBgStyle = '';
             if ($bgHex && $bgOp > 0) {
                 $r = hexdec(substr($bgHex, 1, 2));
                 $g = hexdec(substr($bgHex, 3, 2));
                 $b = hexdec(substr($bgHex, 5, 2));
                 $a = round($bgOp / 100, 2);
-                $bgStyle = "background:rgba($r,$g,$b,$a);padding:1.5rem 2rem;border-radius:0.75rem;backdrop-filter:blur(2px)";
+                $radius = match($bgRad) {
+                    'none' => '0',
+                    'lg'   => '9999px',
+                    default => '0.5rem',
+                };
+                $marginAuto = match($hAlign) {
+                    'center' => 'margin-left:auto;margin-right:auto;',
+                    'right'  => 'margin-left:auto;',
+                    default  => '',
+                };
+                $titleBgStyle = "{$marginAuto}width:fit-content;max-width:100%;background:rgba($r,$g,$b,$a);padding:0.45rem 1rem;border-radius:$radius";
             }
         @endphp
         <div class="absolute inset-0 flex {{ $valignClass }}">
             <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full">
-                <div class="max-w-xl {{ $alignClass }}" @if($bgStyle) style="{{ $bgStyle }}" @endif>
+                <div class="max-w-xl {{ $alignClass }}">
                     <template x-if="current === {{ $i }}">
                         <div>
-                            <p class="text-terracota text-xs uppercase tracking-widest mb-4 hero-text-anim">Nueva Colección</p>
-                            <h1 class="{{ $fontClass }} text-4xl sm:text-5xl lg:text-7xl font-light leading-tight mb-6 hero-text-anim-delay {{ $txtColor ? '' : 'text-cream' }}"
-                                @if($txtColor) style="color: {{ $txtColor }}" @endif>
-                                {{ $hb->title }}<br>
-                                @if($hb->subtitle)<em class="italic">{{ $hb->subtitle }}</em>@endif
-                            </h1>
+                            {{-- Tag: siempre fuera del fondo --}}
+                            <p class="text-terracota text-xs uppercase tracking-widest mb-3 hero-text-anim">
+                                Nueva Colección
+                            </p>
+
+                            {{-- Título con fondo opcional (inline-block = abraza el texto) --}}
+                            <div class="mb-6 hero-text-anim-delay" @if($titleBgStyle) style="{{ $titleBgStyle }}" @endif>
+                                <h1 class="{{ $fontClass }} text-4xl sm:text-5xl lg:text-7xl font-light leading-[1.15] {{ $txtColor ? '' : 'text-cream' }}"
+                                    @if($txtColor) style="color:{{ $txtColor }}" @endif>
+                                    {{ $hb->title }}
+                                    @if($hb->subtitle)<br><em class="italic">{{ $hb->subtitle }}</em>@endif
+                                </h1>
+                            </div>
+
+                            {{-- Botón: siempre fuera del fondo --}}
                             @if($hb->button_url)
                             <a href="{{ $hb->button_url }}"
                                class="btn-primary !border-cream !text-cream hover:!bg-terracota hover:!border-terracota hero-text-anim-delay2">

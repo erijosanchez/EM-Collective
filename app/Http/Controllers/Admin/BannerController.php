@@ -91,6 +91,7 @@ class BannerController extends Controller
             'text_color'      => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'text_bg_color'   => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'text_bg_opacity' => 'nullable|integer|min:0|max:90',
+            'text_bg_radius'  => 'nullable|in:none,md,lg',
             'sort_order'      => 'nullable|integer',
             'is_active'     => 'nullable|boolean',
             'starts_at'     => 'nullable|date',
@@ -103,6 +104,7 @@ class BannerController extends Controller
         $data['text_valign']    = $data['text_valign']    ?? 'middle';
         $data['font_family']    = $data['font_family']    ?? 'serif';
         $data['text_bg_opacity'] = $data['text_bg_opacity'] ?? 0;
+        $data['text_bg_radius']  = $data['text_bg_radius']  ?? 'md';
 
         return $data;
     }

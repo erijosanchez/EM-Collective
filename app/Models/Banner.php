@@ -22,6 +22,7 @@ class Banner extends Model
         'font_family',
         'text_bg_color',
         'text_bg_opacity',
+        'text_bg_radius',
         'sort_order',
         'is_active',
         'starts_at',
