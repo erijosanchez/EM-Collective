@@ -86,7 +86,12 @@ class BannerController extends Controller
             'mobile_image'  => 'nullable|image|max:2048',
             'position'      => 'required|in:hero,mid_home,sidebar,popup,category_top',
             'text_align'    => 'nullable|in:left,center,right',
-            'sort_order'    => 'nullable|integer',
+            'text_valign'   => 'nullable|in:top,middle,bottom',
+            'font_family'   => 'nullable|in:serif,sans',
+            'text_color'      => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'text_bg_color'   => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'text_bg_opacity' => 'nullable|integer|min:0|max:90',
+            'sort_order'      => 'nullable|integer',
             'is_active'     => 'nullable|boolean',
             'starts_at'     => 'nullable|date',
             'ends_at'       => 'nullable|date|after:starts_at',
@@ -94,7 +99,10 @@ class BannerController extends Controller
 
         $data['is_active']   = $request->boolean('is_active', true);
         $data['sort_order']  = $data['sort_order'] ?? 0;
-        $data['text_align']  = $data['text_align'] ?? 'left';
+        $data['text_align']  = $data['text_align']  ?? 'left';
+        $data['text_valign']    = $data['text_valign']    ?? 'middle';
+        $data['font_family']    = $data['font_family']    ?? 'serif';
+        $data['text_bg_opacity'] = $data['text_bg_opacity'] ?? 0;
 
         return $data;
     }

@@ -83,7 +83,6 @@
 
 <section class="relative h-[88vh] min-h-[520px] bg-carbon overflow-hidden"
          x-data="heroCarousel({{ $herobanners->count() }})"
-         x-init="init()"
          @mouseenter="pause()" @mouseleave="resume()">
 
     {{-- Slides --}}
@@ -102,18 +101,41 @@
         <div class="absolute inset-0 bg-gradient-to-r from-carbon/60 via-carbon/20 to-transparent"></div>
 
         {{-- Texto del slide --}}
-        <div class="absolute inset-0 flex items-center">
+        @php
+            $hAlign      = $hb->text_align     ?? 'left';
+            $vAlign      = $hb->text_valign    ?? 'middle';
+            $fontFam     = $hb->font_family     ?? 'serif';
+            $txtColor    = $hb->text_color;
+            $bgHex       = $hb->text_bg_color;
+            $bgOp        = (int) ($hb->text_bg_opacity ?? 0);
+            $valignClass = match($vAlign) {
+                'top'    => 'items-start pt-20',
+                'bottom' => 'items-end pb-20',
+                default  => 'items-center',
+            };
+            $alignClass  = match($hAlign) {
+                'center' => 'mx-auto text-center',
+                'right'  => 'ml-auto text-right',
+                default  => 'text-left',
+            };
+            $fontClass   = $fontFam === 'sans' ? 'font-sans' : 'font-serif';
+            $bgStyle     = '';
+            if ($bgHex && $bgOp > 0) {
+                $r = hexdec(substr($bgHex, 1, 2));
+                $g = hexdec(substr($bgHex, 3, 2));
+                $b = hexdec(substr($bgHex, 5, 2));
+                $a = round($bgOp / 100, 2);
+                $bgStyle = "background:rgba($r,$g,$b,$a);padding:1.5rem 2rem;border-radius:0.75rem;backdrop-filter:blur(2px)";
+            }
+        @endphp
+        <div class="absolute inset-0 flex {{ $valignClass }}">
             <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full">
-                <div class="max-w-xl"
-                     :class="{
-                        'mx-auto text-center': '{{ $hb->text_align ?? 'left' }}' === 'center',
-                        'ml-auto text-right':  '{{ $hb->text_align ?? 'left' }}' === 'right',
-                        'text-left':           '{{ $hb->text_align ?? 'left' }}' === 'left'
-                     }">
+                <div class="max-w-xl {{ $alignClass }}" @if($bgStyle) style="{{ $bgStyle }}" @endif>
                     <template x-if="current === {{ $i }}">
                         <div>
                             <p class="text-terracota text-xs uppercase tracking-widest mb-4 hero-text-anim">Nueva Colección</p>
-                            <h1 class="font-serif text-4xl sm:text-5xl lg:text-7xl text-cream font-light leading-tight mb-6 hero-text-anim-delay">
+                            <h1 class="{{ $fontClass }} text-4xl sm:text-5xl lg:text-7xl font-light leading-tight mb-6 hero-text-anim-delay {{ $txtColor ? '' : 'text-cream' }}"
+                                @if($txtColor) style="color: {{ $txtColor }}" @endif>
                                 {{ $hb->title }}<br>
                                 @if($hb->subtitle)<em class="italic">{{ $hb->subtitle }}</em>@endif
                             </h1>
@@ -198,7 +220,7 @@ function heroCarousel(total) {
         progress: 0,
         progressTimer: null,
         init() {
-            if (this.total > 1) this.startAuto();
+            if (this.total > 1) setTimeout(() => this.startAuto(), 100);
         },
         startAuto() {
             this.progress = 0;
