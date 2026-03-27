@@ -490,6 +490,261 @@
     </div>
 </footer>
 
+{{-- ══════════════════════════════════════
+     MODAL GLOBAL — Vista Rápida
+══════════════════════════════════════ --}}
+<div x-data="quickViewModal()"
+     @quick-view.window="open($event.detail)"
+     @keydown.escape.window="close()"
+     x-show="isOpen"
+     style="display:none"
+     class="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
+
+    {{-- Backdrop --}}
+    <div class="fixed inset-0 bg-carbon/70 backdrop-blur-sm" @click="close()"></div>
+
+    {{-- Panel --}}
+    <div class="relative bg-cream w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-none"
+         x-transition:enter="transition ease-out duration-250"
+         x-transition:enter-start="opacity-0 translate-y-8"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-8">
+
+        {{-- Handle mobile --}}
+        <div class="sm:hidden flex justify-center pt-3 pb-0">
+            <div class="w-10 h-1 bg-stone/30 rounded-full"></div>
+        </div>
+
+        {{-- Cerrar --}}
+        <button @click="close()"
+                class="absolute top-3 right-3 z-10 p-2 text-stone hover:text-carbon transition-colors bg-cream/80 rounded-full">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2">
+
+            {{-- Imagen --}}
+            <div class="aspect-[4/3] sm:aspect-[3/4] bg-stone/10 flex-shrink-0">
+                <template x-if="product.image">
+                    <img :src="product.image" :alt="product.name"
+                         class="w-full h-full object-cover">
+                </template>
+                <template x-if="!product.image">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <svg class="w-16 h-16 text-stone/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                </template>
+            </div>
+
+            {{-- Info --}}
+            <div class="p-6 flex flex-col gap-4">
+
+                <div>
+                    <h2 class="font-serif text-2xl font-light leading-tight" x-text="product.name"></h2>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="font-sans text-xl font-medium"
+                              x-text="'S/ ' + (product.price || 0).toFixed(2)"></span>
+                        <template x-if="product.isOnSale">
+                            <span class="text-stone text-sm line-through"
+                                  x-text="'S/ ' + (product.basePrice || 0).toFixed(2)"></span>
+                        </template>
+                        <template x-if="product.isOnSale">
+                            <span class="bg-terracota/10 text-terracota text-xs px-2 py-0.5"
+                                  x-text="'-' + product.discountPct + '%'"></span>
+                        </template>
+                    </div>
+                </div>
+
+                {{-- Colores --}}
+                <template x-if="product.colors && product.colors.length">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest mb-3">Color</p>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="color in product.colors" :key="color.id">
+                                <button type="button"
+                                        @click="selectedColor = color.id"
+                                        :title="color.name"
+                                        :class="selectedColor === color.id
+                                            ? 'ring-2 ring-offset-2 ring-carbon'
+                                            : 'hover:ring-1 hover:ring-stone'"
+                                        class="w-9 h-9 rounded-full border border-stone/20 transition-all"
+                                        :style="`background: ${color.hex}`">
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                {{-- Tallas --}}
+                <template x-if="product.sizes && product.sizes.length">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest mb-3">Talla</p>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="size in product.sizes" :key="size.id">
+                                <button type="button"
+                                        @click="selectedSize = size.id"
+                                        :class="selectedSize === size.id
+                                            ? 'bg-carbon text-cream border-carbon'
+                                            : sizeInStock(size.id)
+                                                ? 'border-stone/30 hover:border-carbon text-carbon'
+                                                : 'border-stone/20 text-stone/40 line-through cursor-not-allowed'"
+                                        class="px-3 py-2 border text-xs uppercase tracking-wider transition-all"
+                                        x-text="size.name">
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                {{-- Stock --}}
+                <template x-if="currentStock !== null">
+                    <p class="text-xs" :class="currentStock > 5 ? 'text-stone' : 'text-terracota'">
+                        <span x-show="currentStock > 10">✓ Disponible</span>
+                        <span x-show="currentStock > 0 && currentStock <= 10">
+                            ⚡ Solo <span x-text="currentStock"></span> disponibles
+                        </span>
+                        <span x-show="currentStock === 0">✕ Sin stock en esta combinación</span>
+                    </p>
+                </template>
+
+                {{-- Botones --}}
+                <div class="flex flex-col gap-2 mt-auto pt-2">
+                    <button type="button"
+                            @click="addToCart()"
+                            :disabled="!canAdd || adding"
+                            class="btn-primary w-full text-center disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span x-show="!adding && canAdd">Agregar al carrito</span>
+                        <span x-show="!adding && !canAdd">Sin stock</span>
+                        <span x-show="adding">Agregando...</span>
+                    </button>
+                    <a :href="`/producto/${product.slug}`"
+                       class="text-center text-stone text-xs uppercase tracking-widest hover:text-carbon underline underline-offset-4 py-1 transition-colors">
+                        Ver todos los detalles →
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Toast de confirmación --}}
+<div x-data="{ show: false, msg: '' }"
+     @cart-added.window="msg = $event.detail; show = true; setTimeout(() => show = false, 3000)"
+     x-show="show"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 translate-y-2"
+     x-transition:enter-end="opacity-100 translate-y-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     style="display:none"
+     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] bg-carbon text-cream text-sm px-6 py-3 rounded-full shadow-xl whitespace-nowrap"
+     x-text="msg">
+</div>
+
+<script>
+function quickViewModal() {
+    return {
+        isOpen: false,
+        product: {},
+        selectedSize: null,
+        selectedColor: null,
+        adding: false,
+
+        get currentVariant() {
+            if (!this.product.variants?.length) return null;
+            return this.product.variants.find(v =>
+                (!this.selectedSize  || v.sizeId  == this.selectedSize) &&
+                (!this.selectedColor || v.colorId == this.selectedColor)
+            ) ?? null;
+        },
+
+        get currentStock() {
+            if (!this.product.variants?.length) return null;
+            if (this.currentVariant) return this.currentVariant.stock;
+            if (this.selectedSize || this.selectedColor) return 0;
+            return null;
+        },
+
+        get canAdd() {
+            if (!this.product.variants?.length) return true;
+            if (this.currentVariant) return this.currentVariant.stock > 0;
+            // Ninguna variante seleccionada: hay stock en alguna?
+            return this.product.variants.some(v => v.stock > 0);
+        },
+
+        sizeInStock(sizeId) {
+            if (!this.product.variants) return true;
+            return this.product.variants.some(v =>
+                v.sizeId == sizeId && v.stock > 0 &&
+                (!this.selectedColor || v.colorId == this.selectedColor)
+            );
+        },
+
+        open(data) {
+            this.product      = data;
+            this.selectedSize  = null;
+            this.selectedColor = null;
+            this.adding        = false;
+            this.isOpen        = true;
+            document.body.style.overflow = 'hidden';
+        },
+
+        close() {
+            this.isOpen = false;
+            document.body.style.overflow = '';
+        },
+
+        async addToCart() {
+            if (!this.canAdd || this.adding) return;
+            this.adding = true;
+
+            const form = new FormData();
+            form.append('_token', document.querySelector('meta[name=csrf-token]').content);
+            form.append('product_id', this.product.id);
+            form.append('quantity', 1);
+            if (this.currentVariant) form.append('variant_id', this.currentVariant.id);
+
+            try {
+                const res  = await fetch('/carrito/agregar', {
+                    method: 'POST', body: form,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const json = await res.json();
+                if (json.success) {
+                    this.close();
+                    window.dispatchEvent(new CustomEvent('cart-added', {
+                        detail: json.message || '¡Producto agregado al carrito!'
+                    }));
+                }
+            } catch(e) {
+                // Fallback: submit normal
+                const f = document.createElement('form');
+                f.method = 'POST'; f.action = '/carrito/agregar';
+                ['_token','product_id','quantity'].forEach(k => {
+                    const i = document.createElement('input');
+                    i.type = 'hidden'; i.name = k;
+                    i.value = k === '_token'
+                        ? document.querySelector('meta[name=csrf-token]').content
+                        : k === 'product_id' ? this.product.id : 1;
+                    f.appendChild(i);
+                });
+                document.body.appendChild(f); f.submit();
+            } finally {
+                this.adding = false;
+            }
+        }
+    }
+}
+</script>
+
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @yield('scripts')
 

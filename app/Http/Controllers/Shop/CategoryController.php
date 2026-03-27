@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
         $query = Product::active()
             ->whereIn('category_id', $categoryIds)
-            ->with(['category', 'brand', 'images', 'variants']);
+            ->with(['category', 'brand', 'images', 'variants.size', 'variants.color']);
 
         // ── Filtros ──────────────────────────────────────────────────────
         if ($request->filled('price_min')) {

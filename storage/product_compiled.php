@@ -1,31 +1,31 @@
-@php use Illuminate\Support\Str; @endphp
-@extends('layouts.shop')
+<?php use Illuminate\Support\Str; ?>
 
-@section('title', $product->meta_title ?? $product->name . ' | EM Collective')
-@section('description', $product->meta_description ?? Str::limit(strip_tags($product->description), 160)) 
-@section('og_type', 'product') 
-@section('og_title', $product->name . ' | EM Collective')
-@section('og_description', Str::limit(strip_tags($product->description ?? ''), 160))
-@section('og_image', $product->images->first() ? asset('storage/' . $product->images->first()->path) :
-    asset('img/og-default.jpg'))
-    
-@section('json_ld')
+
+<?php $__env->startSection('title', $product->meta_title ?? $product->name . ' | EM Collective'); ?><?php $__env->stopSection(); ?>
+<?php $__env->startSection('description', $product->meta_description ?? Str::limit(strip_tags($product->description), 160)); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('og_type', 'product'); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('og_title', $product->name . ' | EM Collective'); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('og_description', Str::limit(strip_tags($product->description ?? ''), 160)); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('og_image', $product->images->first() ? asset('storage/' . $product->images->first()->path) :
+    asset('img/og-default.jpg')); ?> <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('json_ld'); ?>
 <script type="application/ld+json">
 {
-  "@@context": "https://schema.org/",
-  "@@type": "Product",
-  "name": "{{ addslashes($product->name) }}",
-  "description": "{{ addslashes(Str::limit(strip_tags($product->description ?? ''), 300)) }}",
-  "sku": "{{ $product->sku }}",
-  "brand": { "@@type": "Brand", "name": "{{ $product->brand?->name ?? 'EM Collective' }}" },
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "<?php echo e(addslashes($product->name)); ?>",
+  "description": "<?php echo e(addslashes(Str::limit(strip_tags($product->description ?? ''), 300))); ?>",
+  "sku": "<?php echo e($product->sku); ?>",
+  "brand": { "@type": "Brand", "name": "<?php echo e($product->brand?->name ?? 'EM Collective'); ?>" },
   "offers": {
-    "@@type": "Offer",
-    "url": "{{ route('product.show', $product->slug) }}",
+    "@type": "Offer",
+    "url": "<?php echo e(route('product.show', $product->slug)); ?>",
     "priceCurrency": "PEN",
-    "price": "{{ $product->current_price }}",
-    "availability": "{{ $product->total_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
+    "price": "<?php echo e($product->current_price); ?>",
+    "availability": "<?php echo e($product->total_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'); ?>"
   }
-  @php
+  <?php
       $jsonExtras = '';
       if ($product->images->first()) {
           $jsonExtras .= ',"image": "' . asset('storage/' . $product->images->first()->path) . '"';
@@ -34,48 +34,48 @@
           $jsonExtras .= ',"aggregateRating": {"@@type": "AggregateRating","ratingValue": "' . number_format($product->average_rating, 1) . '","reviewCount": "' . $product->approvedReviews->count() . '"}';
       }
       echo $jsonExtras;
-  @endphp
+  ?>
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <div class="mx-auto px-4 sm:px-6 py-8 max-w-7xl">
 
-        {{-- Breadcrumb --}}
+        
         <nav class="mb-8 text-stone text-xs uppercase tracking-widest">
-            <a href="{{ route('home') }}" class="hover:text-carbon">Inicio</a>
-            @if ($product->category)
+            <a href="<?php echo e(route('home')); ?>" class="hover:text-carbon">Inicio</a>
+            <?php if($product->category): ?>
                 <span class="mx-2">/</span>
-                <a href="{{ route('category.show', $product->category->slug) }}"
-                    class="hover:text-carbon">{{ $product->category->name }}</a>
-            @endif
+                <a href="<?php echo e(route('category.show', $product->category->slug)); ?>"
+                    class="hover:text-carbon"><?php echo e($product->category->name); ?></a>
+            <?php endif; ?>
             <span class="mx-2">/</span>
-            <span class="text-carbon">{{ $product->name }}</span>
+            <span class="text-carbon"><?php echo e($product->name); ?></span>
         </nav>
 
         <div class="gap-8 lg:gap-16 grid grid-cols-1 md:grid-cols-2">
 
-            {{-- Galería con zoom --}}
+            
             <div x-data="{ active: 0, zoomed: false, zX: 50, zY: 50 }" class="flex sm:flex-row flex-col-reverse gap-4">
 
-                {{-- Thumbnails --}}
-                @if ($product->images->count() > 1)
+                
+                <?php if($product->images->count() > 1): ?>
                     <div class="flex sm:flex-col flex-shrink-0 gap-2 sm:w-20 overflow-x-auto sm:overflow-y-auto">
-                        @foreach ($product->images as $i => $image)
-                            <button @click="active = {{ $i }}; zoomed = false"
+                        <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <button @click="active = <?php echo e($i); ?>; zoomed = false"
                                 class="flex-shrink-0 border-2 w-16 sm:w-20 h-16 sm:h-20 overflow-hidden transition-colors"
-                                :class="active === {{ $i }} ? 'border-carbon' :
+                                :class="active === <?php echo e($i); ?> ? 'border-carbon' :
                                     'border-transparent hover:border-stone/40'">
-                                <img src="{{ asset('storage/' . $image->path) }}" alt=""
+                                <img src="<?php echo e(asset('storage/' . $image->path)); ?>" alt=""
                                     class="w-full h-full object-cover">
                             </button>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                {{-- Imagen principal con zoom --}}
+                
                 <div class="relative flex-1 bg-stone/10 aspect-[3/4] overflow-hidden select-none"
                     :class="zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'" @mouseenter="zoomed = true"
                     @mouseleave="zoomed = false"
@@ -84,33 +84,33 @@
                         zX = ((event.clientX - r.left) / r.width * 100).toFixed(2);
                         zY = ((event.clientY - r.top)  / r.height * 100).toFixed(2);
                     ">
-                    @foreach ($product->images as $i => $image)
-                        <img x-show="active === {{ $i }}" src="{{ asset('storage/' . $image->path) }}"
-                            alt="{{ $product->name }}"
+                    <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <img x-show="active === <?php echo e($i); ?>" src="<?php echo e(asset('storage/' . $image->path)); ?>"
+                            alt="<?php echo e($product->name); ?>"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-100 pointer-events-none will-change-transform"
                             :style="zoomed
                                 ?
                                 `transform:scale(2.2);transform-origin:${zX}% ${zY}%` :
                                 'transform:scale(1)'">
-                    @endforeach
-                    @if ($product->images->isEmpty())
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($product->images->isEmpty()): ?>
                         <div class="flex justify-center items-center bg-stone/20 w-full h-full">
                             <svg class="w-24 h-24 text-stone/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Badge oferta --}}
-                    @if ($product->is_on_sale)
+                    
+                    <?php if($product->is_on_sale): ?>
                         <span
                             class="top-4 left-4 absolute bg-terracota px-3 py-1 text-white text-xs uppercase tracking-wider pointer-events-none">
-                            -{{ $product->discount_percentage }}%
+                            -<?php echo e($product->discount_percentage); ?>%
                         </span>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Hint de zoom (solo en desktop) --}}
+                    
                     <span
                         class="hidden right-3 bottom-3 absolute sm:flex items-center gap-1 bg-carbon/50 px-2 py-1 rounded text-[10px] text-cream/80 pointer-events-none"
                         x-show="!zoomed">
@@ -123,23 +123,23 @@
                 </div>
             </div>
 
-            {{-- Info Producto --}}
-            @php
+            
+            <?php
                 $colorsData = $product->variants
                     ->pluck('color')
                     ->filter()
                     ->unique('id')
                     ->map(fn($c) => ['id' => $c->id, 'name' => $c->name])
                     ->values();
-            @endphp
+            ?>
 
             <div x-data="{
                 selectedColor: null,
                 selectedSize: null,
                 quantity: 1,
                 sizeGuideOpen: false,
-                colors: {{ $colorsData->toJson() }},
-                variants: {{ $product->variants->map(
+                colors: <?php echo e($colorsData->toJson()); ?>,
+                variants: <?php echo e($product->variants->map(
                         fn($v) => [
                             'id' => $v->id,
                             'size_id' => $v->size_id,
@@ -147,7 +147,7 @@
                             'stock' => $v->stock,
                             'price' => $v->final_price,
                         ],
-                    )->toJson() }},
+                    )->toJson()); ?>,
                 get currentVariant() {
                     if (!this.selectedSize && !this.selectedColor) return null;
                     return this.variants.find(v =>
@@ -156,10 +156,10 @@
                     ) || null;
                 },
                 get currentPrice() {
-                    return this.currentVariant ? this.currentVariant.price : {{ (float) $product->current_price }};
+                    return this.currentVariant ? this.currentVariant.price : <?php echo e((float) $product->current_price); ?>;
                 },
                 get stock() {
-                    return this.currentVariant ? this.currentVariant.stock : {{ (int) $product->total_stock }};
+                    return this.currentVariant ? this.currentVariant.stock : <?php echo e((int) $product->total_stock); ?>;
                 },
                 get canAdd() {
                     return this.stock > 0;
@@ -179,71 +179,73 @@
                 }
             }">
 
-                {{-- Brand --}}
-                @if ($product->brand)
-                    <p class="mb-2 text-terracota text-xs uppercase tracking-widest">{{ $product->brand->name }}</p>
-                @endif
+                
+                <?php if($product->brand): ?>
+                    <p class="mb-2 text-terracota text-xs uppercase tracking-widest"><?php echo e($product->brand->name); ?></p>
+                <?php endif; ?>
 
-                <h1 class="mb-4 font-serif font-light text-2xl sm:text-3xl lg:text-4xl leading-tight">{{ $product->name }}
+                <h1 class="mb-4 font-serif font-light text-2xl sm:text-3xl lg:text-4xl leading-tight"><?php echo e($product->name); ?>
+
                 </h1>
 
-                {{-- Precio --}}
+                
                 <div class="flex items-center gap-3 mb-6">
                     <span class="font-sans font-medium text-2xl" x-text="'S/ ' + currentPrice.toFixed(2)">
-                        S/ {{ number_format($product->current_price, 2) }}
+                        S/ <?php echo e(number_format($product->current_price, 2)); ?>
+
                     </span>
-                    @if ($product->is_on_sale)
+                    <?php if($product->is_on_sale): ?>
                         <span class="text-stone text-sm line-through">S/
-                            {{ number_format($product->base_price, 2) }}</span>
+                            <?php echo e(number_format($product->base_price, 2)); ?></span>
                         <span
-                            class="bg-terracota/10 px-2 py-0.5 text-terracota text-xs">-{{ $product->discount_percentage }}%</span>
-                    @endif
+                            class="bg-terracota/10 px-2 py-0.5 text-terracota text-xs">-<?php echo e($product->discount_percentage); ?>%</span>
+                    <?php endif; ?>
                 </div>
 
-                {{-- Reseñas --}}
-                @if ($product->approvedReviews->count())
+                
+                <?php if($product->approvedReviews->count()): ?>
                     <div class="flex items-center gap-2 mb-6">
                         <div class="flex">
-                            @for ($i = 1; $i <= 5; $i++)
-                                <svg class="w-4 h-4 {{ $i <= $product->average_rating ? 'text-terracota' : 'text-stone/30' }}"
+                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                <svg class="w-4 h-4 <?php echo e($i <= $product->average_rating ? 'text-terracota' : 'text-stone/30'); ?>"
                                     fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
-                            @endfor
+                            <?php endfor; ?>
                         </div>
-                        <span class="text-stone text-xs">({{ $product->approvedReviews->count() }} reseñas)</span>
+                        <span class="text-stone text-xs">(<?php echo e($product->approvedReviews->count()); ?> reseñas)</span>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                {{-- Colores --}}
-                @php $colors = $product->variants->pluck('color')->filter()->unique('id'); @endphp
-                @if ($colors->count())
+                
+                <?php $colors = $product->variants->pluck('color')->filter()->unique('id'); ?>
+                <?php if($colors->count()): ?>
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-xs uppercase tracking-widest">Color</span>
-                            {{-- FIX: nombre de color reactivo via Alpine --}}
+                            
                             <span class="text-stone text-xs" x-show="selectedColor" x-text="selectedColorName"></span>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            @foreach ($colors as $color)
-                                <button @click="selectedColor = {{ $color->id }}"
+                            <?php $__currentLoopData = $colors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $color): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <button @click="selectedColor = <?php echo e($color->id); ?>"
                                     :class="{
-                                        'ring-2 ring-offset-1 ring-carbon': selectedColor === {{ $color->id }},
-                                        'opacity-40 cursor-not-allowed': !colorInStock({{ $color->id }})
+                                        'ring-2 ring-offset-1 ring-carbon': selectedColor === <?php echo e($color->id); ?>,
+                                        'opacity-40 cursor-not-allowed': !colorInStock(<?php echo e($color->id); ?>)
                                     }"
-                                    title="{{ $color->name }}"
+                                    title="<?php echo e($color->name); ?>"
                                     class="border border-stone/30 rounded-full w-10 sm:w-8 h-10 sm:h-8 transition-all"
-                                    style="background: {{ $color->hex_code }}">
+                                    style="background: <?php echo e($color->hex_code); ?>">
                                 </button>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                {{-- Tallas --}}
-                @php $sizes = $product->variants->pluck('size')->filter()->unique('id')->sortBy('sort_order'); @endphp
-                @if ($sizes->count())
+                
+                <?php $sizes = $product->variants->pluck('size')->filter()->unique('id')->sortBy('sort_order'); ?>
+                <?php if($sizes->count()): ?>
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-xs uppercase tracking-widest">Talla</span>
@@ -253,24 +255,26 @@
                             </button>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            @foreach ($sizes as $size)
-                                <button @click="sizeInStock({{ $size->id }}) && (selectedSize = {{ $size->id }})"
+                            <?php $__currentLoopData = $sizes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $size): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <button @click="sizeInStock(<?php echo e($size->id); ?>) && (selectedSize = <?php echo e($size->id); ?>)"
                                     :class="{
-                                        'bg-carbon text-cream border-carbon': selectedSize === {{ $size->id }},
+                                        'bg-carbon text-cream border-carbon': selectedSize === <?php echo e($size->id); ?>,
                                         'border-stone/30 text-stone line-through cursor-not-allowed': !sizeInStock(
-                                            {{ $size->id }}),
+                                            <?php echo e($size->id); ?>),
                                         'border-stone/30 text-carbon hover:border-carbon': sizeInStock(
-                                            {{ $size->id }}) && selectedSize !== {{ $size->id }}
+                                            <?php echo e($size->id); ?>) && selectedSize !== <?php echo e($size->id); ?>
+
                                     }"
                                     class="px-3 py-3 sm:py-2 border min-w-[3rem] text-xs uppercase tracking-wider transition-all">
-                                    {{ $size->name }}
+                                    <?php echo e($size->name); ?>
+
                                 </button>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                {{-- Stock indicator --}}
+                
                 <div class="mb-6">
                     <p class="text-xs" :class="stock > 5 ? 'text-stone' : 'text-terracota'">
                         <span x-show="stock > 10">✓ Disponible en stock</span>
@@ -279,25 +283,25 @@
                     </p>
                 </div>
 
-                {{-- Cantidad + Carrito --}}
+                
                 <div class="flex gap-3 mb-6">
-                    {{-- Cantidad --}}
+                    
                     <div class="flex border border-stone/30">
                         <button @click="if(quantity > 1) quantity--"
                             class="px-3 py-3 text-stone hover:text-carbon transition-colors">−</button>
                         <span x-text="quantity"
                             class="px-4 py-3 border-stone/30 border-x min-w-[3rem] text-sm text-center"></span>
-                        {{-- FIX: también validar que stock > 0 antes de permitir subir --}}
+                        
                         <button @click="if(stock > 0 && quantity < stock) quantity++"
                             class="px-3 py-3 text-stone hover:text-carbon transition-colors">+</button>
                     </div>
 
-                    {{-- Agregar al carrito --}}
-                    <form action="{{ route('cart.add') }}" method="POST" class="flex-1">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    
+                    <form action="<?php echo e(route('cart.add')); ?>" method="POST" class="flex-1">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="product_id" value="<?php echo e($product->id); ?>">
                         <input type="hidden" name="quantity" :value="quantity">
-                        {{-- FIX: evitar que se envíe "undefined" cuando no hay variante --}}
+                        
                         <input type="hidden" name="variant_id" :value="currentVariant?.id ?? ''">
                         <button type="submit" :disabled="!canAdd"
                             class="disabled:opacity-50 py-3 w-full disabled:cursor-not-allowed btn-primary">
@@ -307,10 +311,10 @@
                     </form>
                 </div>
 
-                {{-- Wishlist --}}
-                @auth
-                    <form action="{{ route('account.wishlist.toggle', $product->id) }}" method="POST" class="mb-8">
-                        @csrf
+                
+                <?php if(auth()->guard()->check()): ?>
+                    <form action="<?php echo e(route('account.wishlist.toggle', $product->id)); ?>" method="POST" class="mb-8">
+                        <?php echo csrf_field(); ?>
                         <button type="submit"
                             class="flex items-center gap-2 text-stone hover:text-terracota text-sm transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,11 +324,11 @@
                             Guardar en wishlist
                         </button>
                     </form>
-                @endauth
+                <?php endif; ?>
 
-                {{-- Accordions --}}
+                
                 <div class="space-y-0 border-stone/20 border-t">
-                    {{-- Descripción --}}
+                    
                     <div x-data="{ open: true }" class="border-stone/20 border-b">
                         <button @click="open = !open"
                             class="flex justify-between items-center py-4 w-full text-xs uppercase tracking-widest">
@@ -336,12 +340,13 @@
                             </svg>
                         </button>
                         <div x-show="open" x-transition class="pb-4 text-stone text-sm leading-relaxed">
-                            {{ $product->description }}
+                            <?php echo e($product->description); ?>
+
                         </div>
                     </div>
 
-                    {{-- Detalles / Especificaciones --}}
-                    @if ($product->details)
+                    
+                    <?php if($product->details): ?>
                         <div x-data="{ open: false }" class="border-stone/20 border-b">
                             <button @click="open = !open"
                                 class="flex justify-between items-center py-4 w-full text-xs uppercase tracking-widest">
@@ -353,12 +358,13 @@
                                 </svg>
                             </button>
                             <div x-show="open" x-transition class="pb-4 max-w-none text-stone text-sm prose prose-sm">
-                                {!! $product->details !!}
+                                <?php echo $product->details; ?>
+
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Modal guía de tallas --}}
+                    
                     <div x-show="sizeGuideOpen" @keydown.escape.window="sizeGuideOpen = false"
                         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
                         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
@@ -390,7 +396,7 @@
                                 <p class="text-stone text-sm">Todas las medidas están en centímetros y corresponden a las
                                     medidas del cuerpo, no de la prenda.</p>
 
-                                {{-- Tabla Mujer --}}
+                                
                                 <div>
                                     <h4 class="mb-3 text-xs uppercase tracking-widest">Mujer</h4>
                                     <div class="overflow-x-auto">
@@ -457,7 +463,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Tabla Hombre --}}
+                                
                                 <div>
                                     <h4 class="mb-3 text-xs uppercase tracking-widest">Hombre</h4>
                                     <div class="overflow-x-auto">
@@ -528,47 +534,47 @@
             </div>
         </div>
 
-        {{-- Reseñas --}}
-        @if ($product->approvedReviews->count())
+        
+        <?php if($product->approvedReviews->count()): ?>
             <div class="mt-16 pt-12 border-stone/20 border-t">
                 <h2 class="mb-8 font-serif font-light text-3xl">Reseñas de clientes</h2>
                 <div class="gap-6 grid sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($product->approvedReviews->take(6) as $review)
+                    <?php $__currentLoopData = $product->approvedReviews->take(6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $review): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="bg-white p-6 border border-stone/20">
                             <div class="flex mb-2">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-terracota' : 'text-stone/20' }}"
+                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                    <svg class="w-4 h-4 <?php echo e($i <= $review->rating ? 'text-terracota' : 'text-stone/20'); ?>"
                                         fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
-                                @endfor
+                                <?php endfor; ?>
                             </div>
-                            @if ($review->title)
-                                <h4 class="mb-1 font-sans font-medium text-sm">{{ $review->title }}</h4>
-                            @endif
-                            <p class="text-stone text-sm leading-relaxed">{{ $review->body }}</p>
-                            <p class="mt-3 text-stone text-xs">{{ $review->user?->name }} ·
-                                {{ $review->created_at->diffForHumans() }}</p>
+                            <?php if($review->title): ?>
+                                <h4 class="mb-1 font-sans font-medium text-sm"><?php echo e($review->title); ?></h4>
+                            <?php endif; ?>
+                            <p class="text-stone text-sm leading-relaxed"><?php echo e($review->body); ?></p>
+                            <p class="mt-3 text-stone text-xs"><?php echo e($review->user?->name); ?> ·
+                                <?php echo e($review->created_at->diffForHumans()); ?></p>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
 
-        {{-- Relacionados --}}
-        @if ($relatedProducts->count())
+        
+        <?php if($relatedProducts->count()): ?>
             <div class="mt-16 pt-12 border-stone/20 border-t">
                 <h2 class="mb-8 font-serif font-light text-3xl">También te puede gustar</h2>
                 <div class="gap-4 sm:gap-6 grid grid-cols-2 sm:grid-cols-4">
-                    @foreach ($relatedProducts as $related)
-                        @include('shop._product-card', ['product' => $related])
-                    @endforeach
+                    <?php $__currentLoopData = $relatedProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $related): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php echo $__env->make('shop._product-card', ['product' => $related], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
 
-        {{-- Vistos recientemente --}}
+        
         <div x-data="recentlyViewedSection()" x-init="load()">
             <template x-if="items.length > 0">
                 <div class="mt-16 pt-12 border-stone/20 border-t">
@@ -597,11 +603,11 @@
         // ── Tracking: guarda este producto en el historial local ──────────────
         (function() {
             const current = {
-                id: {{ $product->id }},
-                name: {{ json_encode($product->name) }},
-                price: {{ (float) $product->current_price }},
-                image: {{ json_encode($product->primary_image ? asset('storage/' . $product->primary_image) : '') }},
-                url: {{ json_encode(route('product.show', $product->slug)) }},
+                id: <?php echo e($product->id); ?>,
+                name: <?php echo e(json_encode($product->name)); ?>,
+                price: <?php echo e((float) $product->current_price); ?>,
+                image: <?php echo e(json_encode($product->primary_image ? asset('storage/' . $product->primary_image) : '')); ?>,
+                url: <?php echo e(json_encode(route('product.show', $product->slug))); ?>,
             };
             try {
                 let rv = JSON.parse(localStorage.getItem('em_rv') || '[]');
@@ -618,7 +624,7 @@
                 load() {
                     try {
                         const rv = JSON.parse(localStorage.getItem('em_rv') || '[]');
-                        this.items = rv.filter(p => p.id !== {{ $product->id }}).slice(0, 4);
+                        this.items = rv.filter(p => p.id !== <?php echo e($product->id); ?>).slice(0, 4);
                     } catch (e) {
                         this.items = [];
                     }
@@ -627,4 +633,6 @@
         }
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.shop', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
